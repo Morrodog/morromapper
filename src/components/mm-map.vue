@@ -26,10 +26,9 @@
   import { defineComponent, reactive, provide } from 'vue'
   import * as L from 'leaflet';
 
-  import TRMap from '/src/assets/tr-gridmap.png'
+  import TRMap from '/src/assets/gridmap.png'
 
-  // The `BOUNDS` are the bounds of the map in map units: NOT in pixels. See `https://leafletjs.com/examples/crs-simple/crs-simple.html` for more.
-  const BOUNDS = [[0, 0], [1000, 1000]];
+  import BOUNDS from '/src/constants/backgroundmap-bounds.ts'
 
   export default defineComponent({
     setup() {
@@ -47,6 +46,7 @@
           crs: L.CRS.Simple,
           minZoom: -1,
         });
+
         L.imageOverlay(TRMap, BOUNDS).addTo(map);
         map.fitBounds(BOUNDS);
         return map;
