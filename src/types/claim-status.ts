@@ -14,6 +14,9 @@
  * - Closed
  *
  * Not to be confused with `CellStatus`.
+ *
+ * Strings are used for the values to make `Claim`
+ * documents more readable when shown as plain JSON.
  */
 enum ClaimStatus {
   /**
@@ -21,7 +24,7 @@ enum ClaimStatus {
    *
    * Corresponds to the "Merged" status on Tamriel Rebuilt's claim tracker.
    */
-  DONE = 0,
+  DONE = "DONE",
   /**
    * Corresponds to the following statuses on Tamriel Rebuilt's claim tracker:
    * - Claim Pending
@@ -34,15 +37,15 @@ enum ClaimStatus {
    * all the user needs to know is that the claim isn't done, but that it's 
    * being worked on.
    */
-  IN_PROGRESS,
+  IN_PROGRESS = "IN_PROGRESS",
   /**
    * Corresponds to the "Unclaimed" status in Tamriel Rebuilt's bug tracker.
    */
-  NOT_STARTED,
+  NOT_STARTED = "NOT_STARTED",
   /**
    * Corresponds to the "Closed" status in Tamriel Rebuilt's bug tracker.
    */
-  CLOSED
+  CLOSED = "CLOSED"
 }
 
 export default ClaimStatus
