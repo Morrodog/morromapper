@@ -20,6 +20,10 @@
       cell: {
         type: CellXY,
         required: true
+      },
+      color: {
+        type: String,
+        required: true
       }
     },
     data() {
@@ -90,6 +94,9 @@
        * furthest away in the dimension of the given coordinate to the origin of raster space at the bottom-left of the image.
        * (For example, it would give the coordinate of the top of a cell border because the origin is at the bottom of the image.)
        * 
+       * Note that the returned number is the position of the rightmost or topmost pixel row/column of the border itself;
+       * not the square enclosed by it.
+       * 
        * @param farOriginBorder gives the topmost or rightmost coordinate of the origin cell.
        *   Should be the topmost for the Y dimension, and rightmost for the X dimension.
        */
@@ -100,7 +107,7 @@
         // (The increment is negative because we'd be adding it to a negative number.)
         var originCellIncrement = (Math.sign(coordinate) === -1)?-1:0;
         return (
-          // Start from the furthest row of pixels in the furthest border of the origin cell
+          // Start from the furthest row or column of pixels in the furthest border of the origin cell
           (farOriginBorder) +
           ((coordinate + originCellIncrement) * this.backgroundmapMetadata.cellSideLength) +
           ((coordinate + originCellIncrement) * this.backgroundmapMetadata.borderWidth)
@@ -110,9 +117,20 @@
     render() {
       if(this.mapInitialized && !this.addedToMap) {
         var testFeature = L.polygon(this.cellLeafletCoordinates, {
-          stroke: false
+          stroke: false,
+          color: this.color
         });
         testFeature.addTo(this.mapWrapper.map);
+        testFeature.on('mouseover', () => {
+          this.$emit('mouseover', null);
+        });
+        testFeature.on('mouseout', () => {
+          this.$emit('mouseout', null);
+        });
+        testFeature.on('click', () => {
+          this.$emit('click', null);
+        });
+
         this.mapWrapper.map.fitBounds(testFeature.getBounds());
         this.addedToMap = true;
       }

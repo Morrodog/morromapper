@@ -1,9 +1,9 @@
 <template>
   <div>
     <mm-map>
-      <mm-cell :cell="coordinates[0]" :backgroundmap-metadata="metadata" />
-      <mm-cell :cell="coordinates[1]" :backgroundmap-metadata="metadata" />
-      <mm-cell :cell="coordinates[2]" :backgroundmap-metadata="metadata" />
+      <mm-cell :cell="coordinates[0]" :backgroundmap-metadata="metadata" color="#0000ff" />
+      <!--<mm-cell :cell="coordinates[1]" :backgroundmap-metadata="metadata" @mouseover="showClick()" />
+      <mm-cell :cell="coordinates[2]" :backgroundmap-metadata="metadata" @click="showClick()" />-->
     </mm-map>
   </div>
 </template>
@@ -33,6 +33,11 @@
           (new CellXY({x: 1, y:1}))
         ]
       };
+    },
+    methods: {
+      showClick() {
+        console.log("click");
+      }
     }
   })
 </script>
