@@ -1,6 +1,8 @@
 <!--
   This represents a cell in the TESIII engine.
 
+  `mm-cell` is responsible for determining the Leaflet coordinates for a given `CellXY`
+
   TODO: Proper typechecking for coordinate and backgroundmapMetadata
 -->
 <script lang="ts">
@@ -11,7 +13,13 @@
   import BACKGROUNDMAP_BOUND_LENGTH from '/src/constants/backgroundmap-bound-length.ts' 
 
   export default defineComponent({
-    inject: ['mapWrapper'],
+    inject: ['layerGroup'],
+    created() {
+      this.polygon.addTo(this.layerGroup);
+    },
+    beforeUnmount() {
+      this.layerGroup.removeLayer(this.polygon);
+    },
     props: {
       backgroundmapMetadata: {
         type: Object, // Intended to match interface RasterBackgroundmapMetadata
@@ -21,20 +29,37 @@
         type: CellXY,
         required: true
       },
+      /**
+       * Accepts any CSS color
+       */
       color: {
         type: String,
         required: true
+      },
+      hasBorder: {
+        type: Boolean,
+        required: false,
+        default: false
       }
     },
     data() {
       return {
-        addedToMap: false
+        polygon: (() => {
+          var testFeature = L.polygon([]);
+          testFeature.on('mouseover', () => {
+            this.$emit('mouseover', null);
+          });
+          testFeature.on('mouseout', () => {
+            this.$emit('mouseout', null);
+          });
+          testFeature.on('click', () => {
+            this.$emit('click', null);
+          });
+          return testFeature;
+        })()
       }
     },
     computed: {
-      mapInitialized() {
-        return this.mapWrapper.map !== null
-      },
       /*
        * Using the cell coordinate provided by the component instance, this calculates the coordinates in raster space of the square that will be shown on the Leaflet map to represent that cell. 
        * IMPORTANTLY: The coordinate include the top and right border of the cell, and exclude the bottom and left borders of the cell. This is done so that there won't be any gaps between adjacent cells.
@@ -86,6 +111,30 @@
         });
       }
     },
+    watch: {
+      cellLeafletCoordinates: {
+        immediate: true,
+        handler(newVal) {
+          this.polygon.setLatLngs(newVal);
+        }
+      },
+      color: {
+        immediate: true,
+        handler(newVal) {
+          this.polygon.setStyle({
+            color: newVal
+          });
+        }
+      },
+      hasBorder: {
+        immediate: true,
+        handler(newVal) {
+          this.polygon.setStyle({
+            stroke: newVal
+          });
+        }
+      }
+    },
     methods: {
       /*
        * TODO: Figure out a better name for this.
@@ -101,39 +150,15 @@
        *   Should be the topmost for the Y dimension, and rightmost for the X dimension.
        */
       findFarCoordinateOfCell(coordinate: number, farOriginBorder: number) {
-        // If the coordinate is negative, then we need to measure from the near side of the origin cell instead of the top or right.
-        // For example, for a negative Y coordinate, we need to measure from the bottom of the origin instead of the top. The bottom is near
-        // We do this by essentially adding a cell to the number of cells we move from the top border if the Y coordinate is negative.
-        // (The increment is negative because we'd be adding it to a negative number.)
-        var originCellIncrement = (Math.sign(coordinate) === -1)?-1:0;
         return (
-          // Start from the furthest row or column of pixels in the furthest border of the origin cell
           (farOriginBorder) +
-          ((coordinate + originCellIncrement) * this.backgroundmapMetadata.cellSideLength) +
-          ((coordinate + originCellIncrement) * this.backgroundmapMetadata.borderWidth)
+          (coordinate * this.backgroundmapMetadata.cellSideLength) +
+          (coordinate * this.backgroundmapMetadata.borderWidth)
         );
       },
     },
     render() {
-      if(this.mapInitialized && !this.addedToMap) {
-        var testFeature = L.polygon(this.cellLeafletCoordinates, {
-          stroke: false,
-          color: this.color
-        });
-        testFeature.addTo(this.mapWrapper.map);
-        testFeature.on('mouseover', () => {
-          this.$emit('mouseover', null);
-        });
-        testFeature.on('mouseout', () => {
-          this.$emit('mouseout', null);
-        });
-        testFeature.on('click', () => {
-          this.$emit('click', null);
-        });
-
-        this.mapWrapper.map.fitBounds(testFeature.getBounds());
-        this.addedToMap = true;
-      }
+      return null;
     }
   })
 </script>

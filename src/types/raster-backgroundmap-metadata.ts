@@ -44,6 +44,23 @@ interface RasterBackgroundmapMetadata {
    * Note that this length does not include borders.
    */
   cellSideLength: number;
+  /**
+   * Defines the area of the image in which the cell grid is shown.
+   *
+   * This is used primarily for cell picking logic, which needs to know which
+   * region of the image contains candidates for selection.
+   *
+   * The bounds are structured like so:
+   * ```
+   * [
+   *   [topY,    leftX]
+   *   [bottomY, rightX]
+   * ]
+   * ```
+   * Coordinates are in image pixel space, and the bounds include the borders of the cells at the edges of the bounded rectangle.
+   * (So, for example, the topY is the topmost row of pixels in the top border of the top row of cells in the rectangle.)
+   */
+  gridBounds: Array[]
 }
 
 export default RasterBackgroundmapMetadata

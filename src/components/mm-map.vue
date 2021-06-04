@@ -31,13 +31,15 @@
   import BOUNDS from '/src/constants/backgroundmap-bounds.ts'
 
   export default defineComponent({
-    setup() {
-      var mapWrapper = reactive({
-        map: null
-      });
-      provide('mapWrapper', mapWrapper);
+    provide() {
       return {
-        mapWrapper,
+        layerGroup: this.layerGroup
+      };
+    },
+    data() {
+      return {
+        layerGroup: L.layerGroup([]),
+        map: null
       };
     },
     methods: {
@@ -46,6 +48,7 @@
           crs: L.CRS.Simple,
           minZoom: -1,
         });
+        this.layerGroup.addTo(map);
 
         L.imageOverlay(TRMap, BOUNDS).addTo(map);
         map.fitBounds(BOUNDS);
@@ -53,9 +56,7 @@
       }
     },
     mounted() {
-      Object.assign(this.mapWrapper, {
-        map: this.createMap(this.$el)
-      });
+      this.map = this.createMap(this.$el);
     },
   })
 </script>

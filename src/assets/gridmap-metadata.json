@@ -4,5 +4,9 @@
   "originCellTopBorderY": 2600,
   "originCellRightBorderX": 1800,
   "borderWidth": 1,
-  "cellSideLength": 39
+  "cellSideLength": 39,
+  "gridBounds": [
+    [3880, 80],
+    [80, 3880]
+  ]
 }

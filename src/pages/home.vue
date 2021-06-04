@@ -1,17 +1,12 @@
 <template>
   <div>
-    <mm-map>
-      <mm-cell :cell="coordinates[0]" :backgroundmap-metadata="metadata" color="#0000ff" />
-      <!--<mm-cell :cell="coordinates[1]" :backgroundmap-metadata="metadata" @mouseover="showClick()" />
-      <mm-cell :cell="coordinates[2]" :backgroundmap-metadata="metadata" @click="showClick()" />-->
-    </mm-map>
+    <mm-cellpicker :backgroundmap-metadata="gridmapMetadata" />
   </div>
 </template>
 <script>
   import { defineComponent} from 'vue'
 
-  import MMCell from '/src/components/mm-cell.vue'
-  import MMMap  from '/src/components/mm-map.vue'
+  import MMCellpicker from '/src/components/mm-cellpicker.vue'
 
   //import type RasterBackgroundmapMetadata from '/src/types/raster-backgroundmap-metadata.ts'
   import CellXY                           from '/src/types/cell-x-y.ts'
@@ -21,23 +16,12 @@
 
   export default defineComponent({
     components: {
-      'mm-map': MMMap,
-      'mm-cell': MMCell,
+      'mm-cellpicker': MMCellpicker,
     },
     data() {
       return {
-        metadata: gridmapMetadata,
-        coordinates: [
-          (new CellXY({x: 0, y:0})),
-          (new CellXY({x: 0, y:1})),
-          (new CellXY({x: 1, y:1}))
-        ]
+        gridmapMetadata: gridmapMetadata,
       };
     },
-    methods: {
-      showClick() {
-        console.log("click");
-      }
-    }
   })
 </script>
