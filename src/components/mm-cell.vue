@@ -6,7 +6,7 @@
   TODO: Proper typechecking for coordinate and backgroundmapMetadata
 -->
 <script lang="ts">
-  import { defineComponent, h } from 'vue'
+  import { defineComponent } from 'vue'
 
   import CellXY from '/src/types/cell-x-y.ts'
 
