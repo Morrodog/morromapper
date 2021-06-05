@@ -1,13 +1,23 @@
 <template>
   <div>
     <mm-map>
-      <mm-cell v-for="cell in cellsForSelection" :cell="cell" :backgroundmap-metadata="backgroundmapMetadata" color="#ffffff" />
+      <mm-blob
+        :cells="cellsForSelection"
+        :backgroundmap-metadata="backgroundmapMetadata"
+        color="#00000000"
+        @mouseover="hoverCell = $event"
+        @mousout="hoverCell = null"
+        @click="selectCellFromBackground()"
+      />
+      <mm-cell v-if="!!hoverCell" :cell="hoverCell" color="#ffffff" :backgroundmap-metadata="backgroundmapMetadata" @mouseover="hoverCell = $event" @click="toggleCellSelection($event)" />
+      <mm-cell v-for="selectedCell in selectedCells" :cell="selectedCell" color="#000000" :backgroundmap-metadata="backgroundmapMetadata" :has-border="true"/>
     </mm-map>
   </div>
 </template>
 <script>
-  import { defineComponent } from 'vue'
+  import { defineComponent, nextTick } from 'vue'
 
+  import MMBlob from '/src/components/mm-blob.vue'
   import MMCell from '/src/components/mm-cell.vue'
   import MMMap  from '/src/components/mm-map.vue'
 
@@ -25,20 +35,60 @@
   export default defineComponent({
     components: {
       'mm-map': MMMap,
+      'mm-blob': MMBlob,
       'mm-cell': MMCell,
     },
     props: {
       backgroundmapMetadata: {
         type: Object,
         required: true
+      },
+      /**
+       * Expects to be used with a 2-way binding (i.e. `v-model:selected-cells="..."`)
+       */
+      selectedCells: {
+        type: Array,
+        required: true
       }
     },
     data() {
       return {
-        selectedCells: []
+        hoverCell: null
+      }
+    },
+    methods: {
+      /**
+       * If the user's mouse cursor moves faster than hoverCell updates, then the user can directly click the background `mm-blob`.
+       * When this happens, the background `mm-blob` synchronously updates its `lastEmittedCell`, which means that it causes `hoverCell`
+       * to move. When this happens, we need to wait one tick for `hoverCell` to be updated to the spot the user clicked, and once this
+       * has happened, we can respond to the user's click as though they had clicked the hoverCell instead of the background.
+       */
+      selectCellFromBackground() {
+        nextTick(() => {
+          console.log(this.hoverCell);
+          this.toggleCellSelection(this.hoverCell);
+        });
+      },
+      toggleCellSelection(cell) {
+        var selectedCellIndex = this.selectedCells.findIndex((selectedCell) => {
+          return (cell.x === selectedCell.x && cell.y === selectedCell.y);
+        });
+        if(selectedCellIndex !== -1) {
+          this.autoSelectedCells.splice(selectedCellIndex, 1);
+        } else {
+          this.autoSelectedCells.push(cell);
+        }
       }
     },
     computed: {
+      autoSelectedCells: {
+        get() {
+          return this.selectedCells;
+        },
+        set(newVal) {
+          this.$emit('update:selectedCells', newVal);
+        },
+      },
       cellsForSelection() {
         return this.verticalCellRange.map((y) => {
           return this.horizontalCellRange.map((x) => {

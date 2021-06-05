@@ -69,10 +69,18 @@
             this.lastEmittedCell = null;
             this.$emit('mouseout', null);
           });
-          polygon.on('click', () => {
-            // This emission assumes that a 'mouseover' or 'mousemove' event on this cell occurs before the user clicks it.
-            // This assumption has not been tested.
-            this.$emit('click', this.lastEmittedCell);
+          polygon.on('click', (e) => {
+            // This event handler determines its own cell instead of using `this.lastEmittedCell` because
+            // the `'mousemove'` event sometimes lags behind the mouse cursor, which enables the user to click a cell
+            // before the `'mousemove'` event for that cell has emitted.
+
+            // this.emitCell is idempotent, as is assigning mouseingOver to `true`, so we quickly update the
+            // mouseover in case the user has moved the mouse faster than it has been able to keep up with.
+            this.mouseingOver = true;
+            this.emitCell(this.cellFromLeafletPoint(e.latlng));
+            // We dont use this.emitCell because it uses the 'mouseover' event, and cannot be done
+            // more than once without changing cells, which is not what we want for 'click' events.
+            this.$emit('click', this.cellFromLeafletPoint(e.latlng));
           });
           return polygon;
         })(),

@@ -47,8 +47,8 @@
         var map = new L.Map(containerElement, {
           crs: L.CRS.Simple,
           minZoom: -1,
-          updateWhenZooming: false,
-          updateWhenIdle: true,
+          //updateWhenZooming: false,
+          //updateWhenIdle: true,
           preferCanvas: true
         });
         this.layerGroup.addTo(map);
