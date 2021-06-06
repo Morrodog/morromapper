@@ -22,6 +22,10 @@
 
   import BOUNDS from '/src/constants/backgroundmap-bounds.ts'
 
+  import CellDiv from '/src/leaflet-classes/cell-div.ts'
+
+  import CellXY from '/src/types/cell-x-y.ts'
+
   import leafletEventHandlers from '/src/mixins/leaflet-event-handlers.ts'
 
   export default defineComponent({
@@ -55,6 +59,7 @@
           //updateWhenIdle: true,
           preferCanvas: true
         });
+        map.addLayer(new CellDiv(this.backgroundmapMetadata, new CellXY({x:0,y:0})));
         this.layerGroup.addTo(map);
         this.addEventListenersToEvented(map); // Defined in mixins/leaflet-event-handlers.ts
 
