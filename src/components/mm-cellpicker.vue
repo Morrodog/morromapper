@@ -1,7 +1,7 @@
 <template>
   <div>
-    <mm-map :backgroundmap-metadata="backgroundmapMetadata" @cellhover="hoverCell=$event">
-      <mm-blob v-if="!!hoverCell" :cells="[hoverCell]" color="#ffffff"  @click="toggleCellSelection($event)" />
+    <mm-map :backgroundmap-metadata="backgroundmapMetadata" @cellhover="hoverCell=$event" @click="toggleCellSelection($event)">
+      <mm-blob v-if="!!hoverCell" :cells="[hoverCell]" color="#ffffff" />
       <mm-blob v-for="selectedCell in selectedCells" :cells="[selectedCell]" color="#000000" :has-border="true"/>
     </mm-map>
   </div>
@@ -16,13 +16,6 @@
 
   import CellXY from '/src/types/cell-x-y.ts'
   
-  // (inclusive, inclusive)
-  const range = (start, end) => {
-    return (new Array(end - start + 1)).fill().map((x, i) => {
-      return start+i
-    });
-  }
-
   export default defineComponent({
     components: {
       'mm-map': MMMap,
@@ -47,18 +40,6 @@
       }
     },
     methods: {
-      /**
-       * If the user's mouse cursor moves faster than hoverCell updates, then the user can directly click the background `mm-blob`.
-       * When this happens, the background `mm-blob` synchronously updates its `lastEmittedCell`, which means that it causes `hoverCell`
-       * to move. When this happens, we need to wait one tick for `hoverCell` to be updated to the spot the user clicked, and once this
-       * has happened, we can respond to the user's click as though they had clicked the hoverCell instead of the background.
-       */
-      selectCellFromBackground() {
-        nextTick(() => {
-          console.log(this.hoverCell);
-          this.toggleCellSelection(this.hoverCell);
-        });
-      },
       toggleCellSelection(cell) {
         var selectedCellIndex = this.selectedCells.findIndex((selectedCell) => {
           return (cell.x === selectedCell.x && cell.y === selectedCell.y);

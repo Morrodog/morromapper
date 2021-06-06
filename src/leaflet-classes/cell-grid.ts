@@ -8,12 +8,6 @@ import CellXY from '/src/types/cell-x-y.ts'
 // so that none of them catch the mouse in front of the cellgrid.
 const Z_INDEX = 401;
 
-const range = (start, end) => {
-  return (new Array(end - start + 1)).fill().map((x, i) => {
-    return start+i
-  });
-}
-
 const getLeafletRasterRatioY = function getLeafletRasterRatio(backgroundmapMetadata) {
   return BACKGROUNDMAP_BOUND_LENGTH/backgroundmapMetadata.widthPixels;
 };
@@ -65,7 +59,6 @@ var CellGrid = Layer.extend({
     });
 
     DomUtil.addClass(this._overlay, 'leaflet-interactive');
-    this.addInteractiveTarget(this._overlay);
 
 		this.getPane().appendChild(this._overlay);
 		this._reset();
@@ -86,14 +79,9 @@ var CellGrid = Layer.extend({
       });
     }
   },
-
 	onRemove: function () {
 		DomUtil.remove(this._overlay);
-		if (this.options.interactive) {
-			this.removeInteractiveTarget(this._overlay);
-		}
 	},
-
 	getEvents: function () {
 		var events = {
 			zoom: this._reset,
@@ -125,7 +113,6 @@ var CellGrid = Layer.extend({
     //the cell divs from emitting `mouseenter` events.
     Object.assign(innerGrid.style, {
       "display": "block",
-      "font-family": "squaremodern",
       "line-height": "0px",
       "letter-spacing": 0,
       "background-color": "#00000000",
@@ -164,19 +151,26 @@ var CellGrid = Layer.extend({
     for(var rowsFromTop = 0; (cellsTall - rowsFromTop) > 0; rowsFromTop++) {
       for(var columnsFromLeft = 0; (cellsWide - columnsFromLeft) > 0; columnsFromLeft++) {
         ((rowsFromTop, columnsFromLeft) => {
-          let cellDiv = DomUtil.create('div');
+          var cellDiv = DomUtil.create('div');
           Object.assign(cellDiv.style, {
             "background-color": "#00000000",
             "display": "inline-block",
+          });
+          var cellXY = new CellXY({
+            y: topCellRow - rowsFromTop,
+            x: leftCellColumn + columnsFromLeft + 1
+          });
+
+          cellDiv.addEventListener('click', (e) => {
+            this.fire('click', {
+              cell: cellXY
+            });
           });
           cellDiv.addEventListener('mouseenter', () => {
             // The CellXY is wrapped in an object because the CellXY gets contaminated
             // with event information otherwise.
             this.fire('cellhover', {
-              cell: new CellXY({
-                y: topCellRow - rowsFromTop,
-                x: leftCellColumn + columnsFromLeft + 1
-              })
+              cell: cellXY
             });
           });
           cells.appendChild(cellDiv);

@@ -48,6 +48,9 @@
     emits: {
       cellhover(e) {
         return e instanceof CellXY;
+      },
+      click(e) {
+        return e instanceof CellXY;
       }
     },
     props: {
@@ -103,12 +106,17 @@
         // should be compared against removing `cellDivLayerGroup` from `map` and
         // constructing a new `L.Layergroup` instead of reusing the existing one.
         handler(newVal) {
+          this.l().cellsLayerGroup.clearLayers();
           var cellGrid = new CellGrid(newVal);
+          cellGrid.clearAllEventListeners();
           cellGrid.on('cellhover', (e) => {
             this.hoverCell = e.cell;
             this.$emit('cellhover', this.hoverCell);
           });
-          this.l().cellsLayerGroup.clearLayers();
+          cellGrid.on('click', (e) => {
+            this.hoverCell = e.cell;
+            this.$emit('click', this.hoverCell);
+          });
           this.l().cellsLayerGroup.addLayer(cellGrid);
         }
       }
