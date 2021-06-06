@@ -60,7 +60,13 @@ interface RasterBackgroundmapMetadata {
    * Coordinates are in image pixel space, and the bounds include the borders of the cells at the edges of the bounded rectangle.
    * (So, for example, the topY is the topmost row of pixels in the top border of the top row of cells in the rectangle.)
    */
-  gridBounds: Array[]
+  gridBounds: Array[],
+  /**
+   * The URL of the image
+   *
+   * Note that relative URLs will work for backgroundmap files served by Morromapper itself.
+   */
+  imageURL: string
 }
 
 export default RasterBackgroundmapMetadata

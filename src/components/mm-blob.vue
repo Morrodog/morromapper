@@ -6,11 +6,6 @@
 
   It is, however, possible to give a blob's constituent cells individual treatment using the
   'mouseover' event, which will emit the `CellXY` that the user's mouse currently occupies.
-
-  Speaking of events, `mm-blob` emits three events:
-  `mouseover`, which emits a `CellXY` every time the user's mouse enters a new cell.
-  `mouseout`, which emits `null` every time the user's mouse leaves the polygon .
-  `click`, which emits the clicked `CellXY` every time the user clicks any place in the blob.
 -->
 <script lang="ts">
   import CellXY from '/src/types/cell-x-y.ts'
@@ -20,8 +15,13 @@
   import { defineComponent, h } from 'vue'
   import union                  from '@turf/union'
 
+  import leafletEventHandlers from '/src/mixins/leaflet-event-handlers.ts'
+
   export default defineComponent({
-    inject: ['layerGroup'],
+    inject: ['layerGroup', 'backgroundmapMetadata'],
+    mixins: [
+      leafletEventHandlers
+    ],
     created() {
       this.polygon.addTo(this.layerGroup);
     },
@@ -29,10 +29,6 @@
       this.layerGroup.removeLayer(this.polygon);
     },
     props: {
-      backgroundmapMetadata: {
-        type: Object, // Intended to match interface RasterBackgroundmapMetadata
-        required: true
-      },
       /**
        * Expects an array of `CellXY`s.
        */
@@ -57,35 +53,9 @@
       return {
         polygon: (() => {
           var polygon = L.polygon([]);
-          polygon.on('mouseover', (e) => {
-            this.mouseingOver = true;
-            this.emitCell(this.cellFromLeafletPoint(e.latlng));
-          });
-          polygon.on('mousemove', (e) => {
-            this.emitCell(this.cellFromLeafletPoint(e.latlng));
-          });
-          polygon.on('mouseout', () => {
-            this.mouseingOver = false;
-            this.lastEmittedCell = null;
-            this.$emit('mouseout', null);
-          });
-          polygon.on('click', (e) => {
-            // This event handler determines its own cell instead of using `this.lastEmittedCell` because
-            // the `'mousemove'` event sometimes lags behind the mouse cursor, which enables the user to click a cell
-            // before the `'mousemove'` event for that cell has emitted.
-
-            // this.emitCell is idempotent, as is assigning mouseingOver to `true`, so we quickly update the
-            // mouseover in case the user has moved the mouse faster than it has been able to keep up with.
-            this.mouseingOver = true;
-            this.emitCell(this.cellFromLeafletPoint(e.latlng));
-            // We dont use this.emitCell because it uses the 'mouseover' event, and cannot be done
-            // more than once without changing cells, which is not what we want for 'click' events.
-            this.$emit('click', this.cellFromLeafletPoint(e.latlng));
-          });
+          this.addEventListenersToEvented(polygon);
           return polygon;
-        })(),
-        mouseingOver: false,
-        lastEmittedCell: null
+        })()
       }
     },
     computed: {
@@ -220,23 +190,6 @@
       }
     },
     methods: {
-      /**
-       * Given a cell, will emit a `'mouseover'` event containing that cell if
-       * the previous `'mouseover'` event did not also do so.
-       */
-      emitCell(cell) {
-        if(!this.cellsMatch(cell, this.lastEmittedCell)) {
-          this.lastEmittedCell = cell;
-          this.$emit('mouseover', cell);
-        }
-      },
-      /**
-       * Determines whether 2 CellXY objects have the same X and Y.
-       */
-      cellsMatch(cell1, cell2) {
-        if ((!cell1 && !!cell2) || (!!cell1 && !cell2)) return false;
-        return cell1.x === cell2.x && cell1.y === cell2.y;
-      },
       /**
        * Creates a CellXY containing the given `L.Latlng`.
        */

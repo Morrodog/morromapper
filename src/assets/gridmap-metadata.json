@@ -8,5 +8,6 @@
   "gridBounds": [
     [3880, 80],
     [80, 3880]
-  ]
+  ],
+  "imageURL": "/src/assets/gridmap.png"
 }

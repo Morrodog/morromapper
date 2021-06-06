@@ -24,10 +24,6 @@
       'mm-blob': MMBlob
     },
     props: {
-      backgroundmapMetadata: {
-        type: Object, // Intended to match interface RasterBackgroundmapMetadata
-        required: true
-      },
       cell: {
         type: CellXY,
         required: true

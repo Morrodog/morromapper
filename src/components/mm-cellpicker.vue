@@ -1,16 +1,15 @@
 <template>
   <div>
-    <mm-map>
+    <mm-map :backgroundmap-metadata="backgroundmapMetadata">
       <mm-blob
         :cells="cellsForSelection"
-        :backgroundmap-metadata="backgroundmapMetadata"
         color="#00000000"
         @mouseover="hoverCell = $event"
         @mousout="hoverCell = null"
         @click="selectCellFromBackground()"
       />
-      <mm-cell v-if="!!hoverCell" :cell="hoverCell" color="#ffffff" :backgroundmap-metadata="backgroundmapMetadata" @mouseover="hoverCell = $event" @click="toggleCellSelection($event)" />
-      <mm-cell v-for="selectedCell in selectedCells" :cell="selectedCell" color="#000000" :backgroundmap-metadata="backgroundmapMetadata" :has-border="true"/>
+      <mm-cell v-if="!!hoverCell" :cell="hoverCell" color="#ffffff" @mouseover="hoverCell = $event" @click="toggleCellSelection($event)" />
+      <mm-cell v-for="selectedCell in selectedCells" :cell="selectedCell" color="#000000" :has-border="true"/>
     </mm-map>
   </div>
 </template>
