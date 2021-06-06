@@ -1,22 +1,14 @@
 <template>
   <div>
-    <mm-map :backgroundmap-metadata="backgroundmapMetadata">
-      <mm-blob
-        :cells="cellsForSelection"
-        color="#00000000"
-        @mouseover="hoverCell = $event"
-        @mousout="hoverCell = null"
-        @click="selectCellFromBackground()"
-      />
-      <mm-cell v-if="!!hoverCell" :cell="hoverCell" color="#ffffff" @mouseover="hoverCell = $event" @click="toggleCellSelection($event)" />
-      <mm-cell v-for="selectedCell in selectedCells" :cell="selectedCell" color="#000000" :has-border="true"/>
+    <mm-map :backgroundmap-metadata="backgroundmapMetadata" :update:hover-cell="hoverCell = $event">
+      <!--<mm-cell v-if="!!hoverCell" :cell="hoverCell" color="#ffffff"  @click="toggleCellSelection($event)" />
+      <mm-cell v-for="selectedCell in selectedCells" :cell="selectedCell" color="#000000" :has-border="true"/>-->
     </mm-map>
   </div>
 </template>
 <script>
   import { defineComponent, nextTick } from 'vue'
 
-  import MMBlob from '/src/components/mm-blob.vue'
   import MMCell from '/src/components/mm-cell.vue'
   import MMMap  from '/src/components/mm-map.vue'
 
@@ -34,7 +26,6 @@
   export default defineComponent({
     components: {
       'mm-map': MMMap,
-      'mm-blob': MMBlob,
       'mm-cell': MMCell,
     },
     props: {
@@ -88,73 +79,6 @@
           this.$emit('update:selectedCells', newVal);
         },
       },
-      cellsForSelection() {
-        return this.verticalCellRange.map((y) => {
-          return this.horizontalCellRange.map((x) => {
-            return new CellXY({
-              x,
-              y,
-            });
-          });
-        }).flat();
-      },
-      /**
-       * Returns the range of Y coordinates covered by the backgroundmap's `gridBounds`
-       */
-      verticalCellRange() {
-        var originCellTopBorderY = this.backgroundmapMetadata.originCellTopBorderY;
-        var cellSideLength       = this.backgroundmapMetadata.cellSideLength;
-        var borderWidth          = this.backgroundmapMetadata.borderWidth;
-        var imageBottom          = this.backgroundmapMetadata.gridBounds[1][0];
-        var imageTop             = this.backgroundmapMetadata.gridBounds[0][0];
-
-        // For the purpose of counting cells, this is essentially "one cell" as long as an extra border is accounted for elsewhere
-        var cellSize             = cellSideLength + borderWidth;
-
-        // To find the bottom-most cell in the range, we iterate down from the origin cell,
-        // and the cell before the first cell that goes past the bottom of `gridBounds` is the bottom-most cell.
-        // In all of the other ___Most_Coord variables, the same approach is taken.
-        var bottomMostYCoord = (() => {
-          var originBottomBorder = originCellTopBorderY - (cellSideLength + borderWidth);
-          for(var y = 0; (originBottomBorder - (y*cellSize)) > imageBottom; y++);
-          return y*(-1);
-        })();
-        var topMostYCoord = (() => {
-          var originTopBorder = originCellTopBorderY;
-          for(var y = 0; (originTopBorder + (y*cellSize)) < imageTop; y++);
-          return y;
-        })();
-
-        return range(bottomMostYCoord, topMostYCoord);
-      },
-      /**
-       * Returns the range of X coordinates covered by the backgroundmap's `gridBounds`
-       * 
-       * TODO: Deduplicate from `verticalCellRange`
-       */
-      horizontalCellRange() {
-        var originCellRightBorderX = this.backgroundmapMetadata.originCellRightBorderX;
-        var cellSideLength       = this.backgroundmapMetadata.cellSideLength;
-        var borderWidth          = this.backgroundmapMetadata.borderWidth;
-        var imageRight           = this.backgroundmapMetadata.gridBounds[1][1];
-        var imageLeft            = this.backgroundmapMetadata.gridBounds[0][1];
-
-        // For the purpose of counting cells, this is essentially "one cell" as long as an extra border is accounted for elsewhere
-        var cellSize             = cellSideLength + borderWidth;
-
-        var leftMostXCoord = (() => {
-          var originLeftBorder = originCellRightBorderX - (cellSideLength + borderWidth);
-          for(var x = 0; (originLeftBorder - (x*cellSize)) > imageLeft; x++);
-          return x*(-1);
-        })();
-        var rightMostXCoord = (() => {
-          var originRightBorder = originCellRightBorderX;
-          for(var x = 0; (originRightBorder + (x*cellSize)) < imageRight; x++);
-          return x;
-        })();
-
-        return range(leftMostXCoord, rightMostXCoord);
-      }
     }
   })
 </script>

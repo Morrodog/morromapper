@@ -22,11 +22,6 @@
         selectedCells: [],
         gridmapMetadata: gridmapMetadata,
       };
-    },
-    methods: {
-      asdf(a) {
-        console.log(a);
-      }
     }
   })
 </script>

@@ -6,8 +6,8 @@
   "borderWidth": 1,
   "cellSideLength": 39,
   "gridBounds": [
-    [3880, 80],
-    [80, 3880]
+    [3881, 80],
+    [80, 3881]
   ],
   "imageURL": "/src/assets/gridmap.png"
 }

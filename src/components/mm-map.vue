@@ -22,11 +22,22 @@
 
   import BOUNDS from '/src/constants/backgroundmap-bounds.ts'
 
-  import CellDiv from '/src/leaflet-classes/cell-div.ts'
+  import CellGrid from '/src/leaflet-classes/cell-grid.ts'
 
   import CellXY from '/src/types/cell-x-y.ts'
 
   import leafletEventHandlers from '/src/mixins/leaflet-event-handlers.ts'
+
+  import gridmapMetadata from '/src/assets/gridmap-metadata.json'
+  var cellGrid = new CellGrid(gridmapMetadata);
+  var cellDivLayerGroup = L.layerGroup([]);
+
+  // (inclusive, inclusive)
+  const range = (start, end) => {
+    return (new Array(end - start + 1)).fill().map((x, i) => {
+      return start+i
+    });
+  }
 
   export default defineComponent({
     mixins: [
@@ -54,19 +65,108 @@
       createMap(containerElement) {
         var map = new L.Map(containerElement, {
           crs: L.CRS.Simple,
+          //zoomSnap: 0.25,
           minZoom: -1,
           //updateWhenZooming: false,
           //updateWhenIdle: true,
           preferCanvas: true
         });
-        map.addLayer(new CellDiv(this.backgroundmapMetadata, new CellXY({x:0,y:0})));
         this.layerGroup.addTo(map);
+        cellDivLayerGroup.addTo(map);
         this.addEventListenersToEvented(map); // Defined in mixins/leaflet-event-handlers.ts
 
         L.imageOverlay(this.backgroundmapMetadata.imageURL, BOUNDS).addTo(map);
         map.fitBounds(BOUNDS);
         return map;
       },
+    },
+    computed: {
+      cellsForSelection() {
+        return this.verticalCellRange.map((y) => {
+          return this.horizontalCellRange.map((x) => {
+            return new CellXY({
+              x,
+              y,
+            });
+          });
+        }).flat();
+      },
+      /**
+       * Returns the range of Y coordinates covered by the backgroundmap's `gridBounds`
+       */
+      verticalCellRange() {
+        var originCellTopBorderY = this.backgroundmapMetadata.originCellTopBorderY;
+        var cellSideLength       = this.backgroundmapMetadata.cellSideLength;
+        var borderWidth          = this.backgroundmapMetadata.borderWidth;
+        var imageBottom          = this.backgroundmapMetadata.gridBounds[1][0];
+        var imageTop             = this.backgroundmapMetadata.gridBounds[0][0];
+
+        // For the purpose of counting cells, this is essentially "one cell" as long as an extra border is accounted for elsewhere
+        var cellSize             = cellSideLength + borderWidth;
+
+        // To find the bottom-most cell in the range, we iterate down from the origin cell,
+        // and the cell before the first cell that goes past the bottom of `gridBounds` is the bottom-most cell.
+        // In all of the other ___Most_Coord variables, the same approach is taken.
+        var bottomMostYCoord = (() => {
+          var originBottomBorder = originCellTopBorderY - (cellSideLength + borderWidth);
+          for(var y = 0; (originBottomBorder - (y*cellSize)) > imageBottom; y++);
+          return y*(-1);
+        })();
+        var topMostYCoord = (() => {
+          var originTopBorder = originCellTopBorderY;
+          for(var y = 0; (originTopBorder + (y*cellSize)) < imageTop; y++);
+          return y;
+        })();
+
+        return range(bottomMostYCoord, topMostYCoord);
+      },
+      /**
+       * Returns the range of X coordinates covered by the backgroundmap's `gridBounds`
+       * 
+       * TODO: Deduplicate from `verticalCellRange`
+       */
+      horizontalCellRange() {
+        var originCellRightBorderX = this.backgroundmapMetadata.originCellRightBorderX;
+        var cellSideLength         = this.backgroundmapMetadata.cellSideLength;
+        var borderWidth            = this.backgroundmapMetadata.borderWidth;
+        var imageRight             = this.backgroundmapMetadata.gridBounds[1][1];
+        var imageLeft              = this.backgroundmapMetadata.gridBounds[0][1];
+
+        // For the purpose of counting cells, this is essentially "one cell" as long as an extra border is accounted for elsewhere
+        var cellSize             = cellSideLength + borderWidth;
+
+        var leftMostXCoord = (() => {
+          var originLeftBorder = originCellRightBorderX - (cellSideLength + borderWidth);
+          for(var x = 0; (originLeftBorder - (x*cellSize)) > imageLeft; x++);
+          return x*(-1);
+        })();
+        var rightMostXCoord = (() => {
+          var originRightBorder = originCellRightBorderX;
+          for(var x = 0; (originRightBorder + (x*cellSize)) < imageRight; x++);
+          return x;
+        })();
+
+        return range(leftMostXCoord, rightMostXCoord);
+      }
+    },
+    watch: {
+      cellsForSelection: {
+        immediate: true,
+        // TODO: The constructor for `L.LayerGroup` takes an array, but there's
+        // no method for adding multiple layers. With that in mind, performance
+        // should be compared against removing `cellDivLayerGroup` from `map` and
+        // constructing a new `L.Layergroup` instead of reusing the existing one.
+        handler(newVal) {
+          cellDivLayerGroup.clearLayers();
+          //var cellGrid = new CellGrid(this.backgroundmapMetadata);
+          cellDivLayerGroup.addLayer(cellGrid);
+          /*newVal.map((cellXY) => {
+            return new CellDiv(this.backgroundmapMetadata, cellXY);
+          }).forEach((cellDiv) => {
+            //cellDivLayerGroup.addLayer(cellDiv);
+          });*/
+        }
+      }
     },
     mounted() {
       this.map = this.createMap(this.$el);
