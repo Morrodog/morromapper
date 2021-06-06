@@ -17,16 +17,18 @@
 
   import leafletEventHandlers from '/src/mixins/leaflet-event-handlers.ts'
 
+  var leafletStorage = [];
+
   export default defineComponent({
-    inject: ['layerGroup', 'backgroundmapMetadata'],
-    mixins: [
+    inject: ['l', 'backgroundmapMetadata'],
+    /*mixins: [
       leafletEventHandlers
-    ],
+    ],*/
     created() {
-      this.polygon.addTo(this.layerGroup);
+      leafletStorage[this.leafletStorageKey].addTo(this.l().blobsLayerGroup);
     },
     beforeUnmount() {
-      this.layerGroup.removeLayer(this.polygon);
+      this.l().blobsLayerGroup.removeLayer(leafletStorage[this.leafletStorageKey]);
     },
     props: {
       /**
@@ -50,12 +52,10 @@
       }
     },
     data() {
+      var leafletStorageKey = leafletStorage.length;
+      leafletStorage.push(L.polygon([]));
       return {
-        polygon: (() => {
-          var polygon = L.polygon([]);
-          this.addEventListenersToEvented(polygon);
-          return polygon;
-        })()
+        leafletStorageKey
       }
     },
     computed: {
@@ -169,13 +169,13 @@
       blobBoundary: {
         immediate: true,
         handler(newVal) {
-          this.polygon.setLatLngs(newVal);
+          leafletStorage[this.leafletStorageKey].setLatLngs(newVal);
         }
       },
       color: {
         immediate: true,
         handler(newVal) {
-          this.polygon.setStyle({
+          leafletStorage[this.leafletStorageKey].setStyle({
             color: newVal
           });
         }
@@ -183,7 +183,7 @@
       hasBorder: {
         immediate: true,
         handler(newVal) {
-          this.polygon.setStyle({
+          leafletStorage[this.leafletStorageKey].setStyle({
             stroke: newVal
           });
         }

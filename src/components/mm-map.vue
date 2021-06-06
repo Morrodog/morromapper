@@ -29,8 +29,6 @@
   import leafletEventHandlers from '/src/mixins/leaflet-event-handlers.ts'
 
   import gridmapMetadata from '/src/assets/gridmap-metadata.json'
-  var cellGrid = new CellGrid(gridmapMetadata);
-  var cellDivLayerGroup = L.layerGroup([]);
 
   // (inclusive, inclusive)
   const range = (start, end) => {
@@ -39,41 +37,61 @@
     });
   }
 
+/** 
+ * The objects created by Leaflet (`L.Map` and `L.LayerGroup` in particular)
+ * create lag when made reactive by Vue. However, I still want individual `mm-map`
+ * instances to have their own instances of these things, so a module-level variable
+ * would not be suitable. To work around this, each instance of `mm-map` puts its
+ * big Leaflet objects into its position in this array.
+ *
+ * The stored objects have this shape:
+ * {
+ *   map: L.Map
+ *   cellsLayerGroup: L.LayerGroup
+ *   blobsLayerGroup: L.LayerGroup
+ * }
+ */
+var leafletStorage = [];
+
   export default defineComponent({
-    mixins: [
-      leafletEventHandlers
-    ],
-    provide() {
-      return {
-        layerGroup: this.layerGroup,
-        backgroundmapMetadata: this.backgroundmapMetadata
-      };
-    },
     props: {
       backgroundmapMetadata: {
         type: Object, // Expected to be of interface RasterBackgroundmapMetadata
         required: true
       }
     },
-    data() {
+    setup(props) {
+      var leafletStorageKey = leafletStorage.length;
+      leafletStorage[leafletStorageKey] = {
+        map: null,
+        cellsLayerGroup: L.layerGroup([]),
+        blobsLayerGroup: L.layerGroup([]),
+      };
+      provide('l', () => {
+        return leafletStorage[leafletStorageKey];
+      });
+      provide('backgroundmapMetadata', props.backgroundmapMetadata);
       return {
-        layerGroup: L.layerGroup([]),
-        map: null
+        leafletStorageKey: leafletStorageKey
       };
     },
     methods: {
-      createMap(containerElement) {
+      l() {
+        return leafletStorage[this.leafletStorageKey];
+      },
+      initializeMap(containerElement) {
         var map = new L.Map(containerElement, {
           crs: L.CRS.Simple,
           //zoomSnap: 0.25,
           minZoom: -1,
-          //updateWhenZooming: false,
-          //updateWhenIdle: true,
+          updateWhenZooming: false,
+          updateWhenIdle: true,
           preferCanvas: true
         });
-        this.layerGroup.addTo(map);
-        cellDivLayerGroup.addTo(map);
-        this.addEventListenersToEvented(map); // Defined in mixins/leaflet-event-handlers.ts
+        this.l().cellsLayerGroup.addTo(map);
+        this.l().blobsLayerGroup.addTo(map);
+        leafletStorage[this.leafletStorageKey].map = map;
+        //this.addEventListenersToEvented(map); // Defined in mixins/leaflet-event-handlers.ts
 
         L.imageOverlay(this.backgroundmapMetadata.imageURL, BOUNDS).addTo(map);
         map.fitBounds(BOUNDS);
@@ -157,19 +175,14 @@
         // should be compared against removing `cellDivLayerGroup` from `map` and
         // constructing a new `L.Layergroup` instead of reusing the existing one.
         handler(newVal) {
-          cellDivLayerGroup.clearLayers();
-          //var cellGrid = new CellGrid(this.backgroundmapMetadata);
-          cellDivLayerGroup.addLayer(cellGrid);
-          /*newVal.map((cellXY) => {
-            return new CellDiv(this.backgroundmapMetadata, cellXY);
-          }).forEach((cellDiv) => {
-            //cellDivLayerGroup.addLayer(cellDiv);
-          });*/
+          var cellGrid = new CellGrid(gridmapMetadata);
+          this.l().cellsLayerGroup.clearLayers();
+          this.l().cellsLayerGroup.addLayer(cellGrid);
         }
       }
     },
     mounted() {
-      this.map = this.createMap(this.$el);
+      this.initializeMap(this.$el);
     },
   })
 </script>

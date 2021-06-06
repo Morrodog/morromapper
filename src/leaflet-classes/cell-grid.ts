@@ -4,7 +4,9 @@ import BACKGROUNDMAP_BOUND_LENGTH from '/src/constants/backgroundmap-bound-lengt
 
 import CellXY from '/src/types/cell-x-y.ts'
 
-const Z_INDEX = 30;
+// The Z-index for polygons is 400 by default, and we want this to be just in front of the polygons
+// so that none of them catch the mouse in front of the cellgrid.
+const Z_INDEX = 401;
 
 const range = (start, end) => {
   return (new Array(end - start + 1)).fill().map((x, i) => {
@@ -67,12 +69,13 @@ var CellGrid = Layer.extend({
 
     Object.assign(this._grid.style, {
       "padding-left":   `${1*ratioX/(2**(-1*zoomLevel))}px`,
-      "padding-bottom": `${1*ratioX/(2**(-1*zoomLevel))}px`,
+      "padding-bottom": `${1*ratioX/(2**(-1*zoomLevel))}px`
     });
+
     for (var i = 0; i < this._grid.children.length; i++) {
       Object.assign(this._grid.children[i].style, {
         "width": `${(40*ratioX)/(2**(-1*zoomLevel))}px`,
-        "height":   `${(40*ratioX)/(2**(-1*zoomLevel))}px`
+        "height":`${(40*ratioX)/(2**(-1*zoomLevel))}px`
       });
     }
   },
@@ -116,12 +119,14 @@ var CellGrid = Layer.extend({
     var innerGrid = this._grid = DomUtil.create('div');//wasElementSupplied ? this._url : DomUtil.create('img');
     Object.assign(innerGrid.style, {
       "display": "block",
+      "font-family": "squaremodern",
       "line-height": "0px",
       "letter-spacing": 0,
-      "background-color": "red",
+      "background-color": "#ff000000",
       "width": "100%",
       "height": "100%",
-      "z-index": Z_INDEX + 1
+      "z-index": Z_INDEX + 1,
+      "visibility": "hidden"
     });
     //innerGrid.innerHTML = "asdf";
     this._addCells(innerGrid);
@@ -153,8 +158,12 @@ var CellGrid = Layer.extend({
       return range(1, Math.ceil(cellsWide)).map((cellRow, i) => {
         var cellDiv = DomUtil.create('div');
         Object.assign(cellDiv.style, {
-          "background-color": ((i%2===1)?"blue":"green"),
-          "display": "inline-block"
+          "background-color": ((i%2===1)?"green":"blue"),
+          "display": "inline-block",
+          "visibility": "hidden"
+        });
+        cellDiv.addEventListener('mouseenter', () => {
+          console.log("mouse entered cell");
         });
         return cellDiv;
       });

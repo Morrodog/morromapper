@@ -1,6 +1,7 @@
 <template>
   <div>
-    <mm-map :backgroundmap-metadata="backgroundmapMetadata" :update:hover-cell="hoverCell = $event">
+    <mm-map :backgroundmap-metadata="backgroundmapMetadata">
+    <mm-blob :cells="testCells" color="#ff0000" />
       <!--<mm-cell v-if="!!hoverCell" :cell="hoverCell" color="#ffffff"  @click="toggleCellSelection($event)" />
       <mm-cell v-for="selectedCell in selectedCells" :cell="selectedCell" color="#000000" :has-border="true"/>-->
     </mm-map>
@@ -9,7 +10,7 @@
 <script>
   import { defineComponent, nextTick } from 'vue'
 
-  import MMCell from '/src/components/mm-cell.vue'
+  import MMBlob from '/src/components/mm-blob.vue'
   import MMMap  from '/src/components/mm-map.vue'
 
   import cellpickerColor from '/src/constants/cellpicker-color.ts'
@@ -26,7 +27,7 @@
   export default defineComponent({
     components: {
       'mm-map': MMMap,
-      'mm-cell': MMCell,
+      'mm-blob': MMBlob,
     },
     props: {
       backgroundmapMetadata: {
@@ -43,7 +44,10 @@
     },
     data() {
       return {
-        hoverCell: null
+        hoverCell: null,
+        testCells: [
+          new CellXY({x:0,y:0})
+        ]
       }
     },
     methods: {
