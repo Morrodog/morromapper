@@ -147,6 +147,7 @@
        * this sort of crab-claw shape accurately.
        */
       blobBoundary() {
+        if(this.cells.length === 1) return this.cellsLeafletCoordinates;
         return this.cellsLeafletCoordinates.reduce((blob, cellCoords) => {
           // Turf.js expects geoJSON
           return union(blob, {

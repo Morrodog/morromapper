@@ -1,9 +1,8 @@
 <template>
   <div>
-    <mm-map :backgroundmap-metadata="backgroundmapMetadata">
-    <mm-blob :cells="testCells" color="#ff0000" />
-      <!--<mm-cell v-if="!!hoverCell" :cell="hoverCell" color="#ffffff"  @click="toggleCellSelection($event)" />
-      <mm-cell v-for="selectedCell in selectedCells" :cell="selectedCell" color="#000000" :has-border="true"/>-->
+    <mm-map :backgroundmap-metadata="backgroundmapMetadata" @cellhover="hoverCell=$event">
+      <mm-blob v-if="!!hoverCell" :cells="[hoverCell]" color="#ffffff"  @click="toggleCellSelection($event)" />
+      <mm-blob v-for="selectedCell in selectedCells" :cells="[selectedCell]" color="#000000" :has-border="true"/>
     </mm-map>
   </div>
 </template>
@@ -44,10 +43,7 @@
     },
     data() {
       return {
-        hoverCell: null,
-        testCells: [
-          new CellXY({x:0,y:0})
-        ]
+        hoverCell: null
       }
     },
     methods: {

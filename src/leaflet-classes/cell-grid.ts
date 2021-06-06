@@ -117,9 +117,6 @@ var CellGrid = Layer.extend({
 	_init: function () {
     var grid = this._overlay = DomUtil.create('div');//wasElementSupplied ? this._url : DomUtil.create('img');
 		DomUtil.addClass(grid, 'leaflet-image-layer');
-    /*Object.assign(grid.style, {
-      "display": "block",
-    });*/
 		DomUtil.setOpacity(this._overlay, 1);
     this._overlay.style.zIndex = Z_INDEX;
 
@@ -136,7 +133,6 @@ var CellGrid = Layer.extend({
       "height": "100%",
       "z-index": Z_INDEX + 1,
     });
-    //innerGrid.innerHTML = "asdf";
     this._addCells(innerGrid);
     grid.appendChild(innerGrid);
 	},
@@ -162,35 +158,40 @@ var CellGrid = Layer.extend({
     var boundsWidth = this._bounds.getEast() - this._bounds.getWest();
     var boundsHeight = this._bounds.getNorth() - this._bounds.getSouth();
     var cells = new DocumentFragment();
-    range(1, Math.ceil(cellsWide)).map((/*cellColumn*/) => {
-      return range(1, Math.ceil(cellsWide)).map((cellRow, i) => {
-        var cellDiv = DomUtil.create('div');
-        Object.assign(cellDiv.style, {
-          "background-color": ((i%2===1)?"#00000000":"#00000000"),
-          "display": "inline-block",
-          //"visibility": "hidden"
-        });
-        cellDiv.addEventListener('mouseenter', () => {
-          console.log("mouse entered cell");
-        });
-        return cellDiv;
-      });
-    }).flat().forEach((cellDiv) => {
-      cells.appendChild(cellDiv);
-    });
+
+    var topCellRow     = (bm.gridBounds[0][0] - bm.borderWidth - bm.originCellTopBorderY)/rasterCellSize;
+    var leftCellColumn = (bm.gridBounds[0][1] - bm.originCellRightBorderX)/rasterCellSize;
+    for(var rowsFromTop = 0; (cellsTall - rowsFromTop) > 0; rowsFromTop++) {
+      for(var columnsFromLeft = 0; (cellsWide - columnsFromLeft) > 0; columnsFromLeft++) {
+        ((rowsFromTop, columnsFromLeft) => {
+          let cellDiv = DomUtil.create('div');
+          Object.assign(cellDiv.style, {
+            "background-color": "#00000000",
+            "display": "inline-block",
+          });
+          cellDiv.addEventListener('mouseenter', () => {
+            // The CellXY is wrapped in an object because the CellXY gets contaminated
+            // with event information otherwise.
+            this.fire('cellhover', {
+              cell: new CellXY({
+                y: topCellRow - rowsFromTop,
+                x: leftCellColumn + columnsFromLeft + 1
+              })
+            });
+          });
+          cells.appendChild(cellDiv);
+        })(rowsFromTop, columnsFromLeft);
+      }
+    }
     grid.appendChild(cells);
   },
  	_animateZoom: function (e) {
 		var scale = this._map.getZoomScale(e.zoom),
 		    offset = this._map._latLngBoundsToNewLayerBounds(this._bounds, e.zoom, e.center).min;
-  var ratioX = getLeafletRasterRatioX(this._bm);
-  var ratioY = getLeafletRasterRatioY(this._bm);
-  var zoomLevel = this._map.getZoom();
+    var ratioX = getLeafletRasterRatioX(this._bm);
+    var ratioY = getLeafletRasterRatioY(this._bm);
+    var zoomLevel = this._map.getZoom();
 
-    /*Object.assign(this._grid.style, {
-      "line-height": `${40/(4**zoomLevel)}px`,
-      "font-size":   `${40/(4**zoomLevel)}px`
-    });*/
 		DomUtil.setTransform(this._overlay, offset, scale);
   },
 	_reset: function () {
