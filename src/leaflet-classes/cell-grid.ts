@@ -57,6 +57,13 @@ var CellGrid = Layer.extend({
       this._scaleCellsToZoomLevel(this._map.getZoom());
     });
 
+    this._map.on('movestart', () => {
+      this._grid.style.display = "none";
+    });
+    this._map.on('moveend', () => {
+      this._grid.style.display = "block";
+    });
+
     DomUtil.addClass(this._overlay, 'leaflet-interactive');
     this.addInteractiveTarget(this._overlay);
 
@@ -117,16 +124,17 @@ var CellGrid = Layer.extend({
     this._overlay.style.zIndex = Z_INDEX;
 
     var innerGrid = this._grid = DomUtil.create('div');//wasElementSupplied ? this._url : DomUtil.create('img');
+    //We do not use `visibility: hidden` here because it prevents
+    //the cell divs from emitting `mouseenter` events.
     Object.assign(innerGrid.style, {
       "display": "block",
       "font-family": "squaremodern",
       "line-height": "0px",
       "letter-spacing": 0,
-      "background-color": "#ff000000",
+      "background-color": "#00000000",
       "width": "100%",
       "height": "100%",
       "z-index": Z_INDEX + 1,
-      "visibility": "hidden"
     });
     //innerGrid.innerHTML = "asdf";
     this._addCells(innerGrid);
@@ -158,9 +166,9 @@ var CellGrid = Layer.extend({
       return range(1, Math.ceil(cellsWide)).map((cellRow, i) => {
         var cellDiv = DomUtil.create('div');
         Object.assign(cellDiv.style, {
-          "background-color": ((i%2===1)?"green":"blue"),
+          "background-color": ((i%2===1)?"#00000000":"#00000000"),
           "display": "inline-block",
-          "visibility": "hidden"
+          //"visibility": "hidden"
         });
         cellDiv.addEventListener('mouseenter', () => {
           console.log("mouse entered cell");
