@@ -115,7 +115,6 @@ var CellGrid = Layer.extend({
       "display": "block",
       "line-height": "0px",
       "letter-spacing": 0,
-      "background-color": "#00000000",
       "width": "100%",
       "height": "100%",
       "z-index": Z_INDEX + 1,
@@ -153,7 +152,6 @@ var CellGrid = Layer.extend({
         ((rowsFromTop, columnsFromLeft) => {
           var cellDiv = DomUtil.create('div');
           Object.assign(cellDiv.style, {
-            "background-color": "#00000000",
             "display": "inline-block",
           });
           var cellXY = new CellXY({
@@ -167,11 +165,18 @@ var CellGrid = Layer.extend({
             });
           });
           cellDiv.addEventListener('mouseenter', () => {
+            cellDiv.style.backgroundColor = "#ffffff";
             // The CellXY is wrapped in an object because the CellXY gets contaminated
             // with event information otherwise.
             this.fire('cellhover', {
               cell: cellXY
             });
+          });
+          cellDiv.addEventListener('mouseenter', () => {
+            cellDiv.style.backgroundColor = "#ffffff3f";
+          });
+          cellDiv.addEventListener('mouseleave', () => {
+            cellDiv.style.removeProperty("background-color");
           });
           cells.appendChild(cellDiv);
         })(rowsFromTop, columnsFromLeft);

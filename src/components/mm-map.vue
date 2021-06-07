@@ -82,6 +82,7 @@
       initializeMap(containerElement) {
         var map = new L.Map(containerElement, {
           crs: L.CRS.Simple,
+          //Fractional zoomSnap works well in Chrome, but the cells fall out of alignment in Safari
           //zoomSnap: 0.25,
           minZoom: -1,
           updateWhenZooming: false,
