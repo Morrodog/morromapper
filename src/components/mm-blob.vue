@@ -21,9 +21,6 @@
 
   export default defineComponent({
     inject: ['l', 'backgroundmapMetadata'],
-    /*mixins: [
-      leafletEventHandlers
-    ],*/
     created() {
       leafletStorage[this.leafletStorageKey].addTo(this.l().blobsLayerGroup);
     },
@@ -68,32 +65,22 @@
       /*
        * Returns an array of square polygons describing the position of each cell in backgroundmap raster space.
        * Each "square polygon" returned is a two-dimensional array of coordinates (`[Y, X]`) wound clockwise in which the first coordinate is NOT repeated at the end.
-       * 
-       * IMPORTANTLY: Each square includes the top and right border of the cell from which it was produced,
-       * and excludes the bottom and left borders of the cell. This is done so that there won't be any gaps between adjacent cells or blobs.
-       * The choice to use the top and right of the cell for this is arbitrary.
-       *
-       * One way to think about the math for this is that each cell "takes" the border from its top neighbor, "takes" another border from its rightward neighbor, 
-       * and "gives" a border to its bottom and left neighbors, thus taking two borders, and giving two other borders.
        */
       cellsRasterCoordinates() {
         return this.cells.map((cell) => {
-          // These "interior" coordinates describe the bounds of a square just inside of, and not including, the borders of the cell.
-          var interiorRight  = this.findFarCoordinateOfCell(cell.x, this.backgroundmapMetadata.originCellRightBorderX);
-          var interiorTop    = this.findFarCoordinateOfCell(cell.y, this.backgroundmapMetadata.originCellTopBorderY);
-          var interiorLeft   = interiorRight - this.backgroundmapMetadata.cellSideLength; //Note that borderWidth is NOT subtracted here
-          var interiorBottom = interiorTop   - this.backgroundmapMetadata.cellSideLength; //Note that borderWidth is NOT subtracted here
-
-          // These "exterior" coordinates describe the bounds of a square that extends to include the border.
-          // Only two bounds are defined here (right and top) in accordance to the description of the method.
-          var exteriorRight = interiorRight + this.backgroundmapMetadata.borderWidth;
-          var exteriorTop   = interiorTop   + this.backgroundmapMetadata.borderWidth;
+          // TODO: Figure out why using the full border on all sides tiles without overlap, and add a comment.
+          var border = this.backgroundmapMetadata.borderWidth;
+          // These directions are named with "cell" because "top" is a reserved word.
+          var cellRight  = this.findFarCoordinateOfCell(cell.x, this.backgroundmapMetadata.originCellRightBorderX) + border,
+              cellTop    = this.findFarCoordinateOfCell(cell.y, this.backgroundmapMetadata.originCellTopBorderY)   + border,
+              cellLeft   = cellRight - this.backgroundmapMetadata.cellSideLength                                   - border,
+              cellBottom = cellTop   - this.backgroundmapMetadata.cellSideLength                                   - border;
 
           return [
-            [exteriorTop,    interiorLeft ],
-            [exteriorTop,    exteriorRight],
-            [interiorBottom, exteriorRight],
-            [interiorBottom, interiorLeft ],
+            [cellTop,    cellLeft ],
+            [cellTop,    cellRight],
+            [cellBottom, cellRight],
+            [cellBottom, cellLeft ],
           ];
         })
       },
