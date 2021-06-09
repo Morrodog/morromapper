@@ -10,6 +10,14 @@ import CellXY   from '/src/types/cell-x-y.ts'
  */
 interface Release extends Document {
   releasedCells: CellXY[];
+  /**
+   * ISO 8601 representation of the date/time GMT
+   */
+  date: string
+  /**
+   * Displayed to the user
+   */
+  name: string
 }
 
 export default Release;
