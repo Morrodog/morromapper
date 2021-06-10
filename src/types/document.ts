@@ -1,4 +1,4 @@
-import DocumentType from '/src/types/document-type.ts'
+import MapChangeType from '/src/types/map-change-type.ts'
 
 /**
  * Generically represents a document from the databse
@@ -11,5 +11,5 @@ interface Document {
   /**
    * The type of the document.
    */
-  type: DocumentType;
+  type: MapChangeTyp;
 }

@@ -51,6 +51,8 @@ interface Claim {
   cells: CellXY[];
   /**
    * An array of claim updates ordered by date ascending.
+   *
+   * Note that the `ClaimStatus` of the claim is the `newClaimStatus` of the last member of `updates`.
    */
   updates: ClaimUpdate[];
 }

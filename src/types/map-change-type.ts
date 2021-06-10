@@ -1,16 +1,14 @@
 /**
  * Used primarily in the database to select only documents of a specific type.
+ *
+ * This is named `MapChangeType` instead of `DocumentType` only because `DocumentType` is a native constructor.
+ * This name is an unsatisfactory workaround, but no better name has been devised.
  */
-enum DocumentType {
+enum MapChangeType {
   /**
-   * The document of this type an array of `Cell` objects.
-   *
-   * Intended to contain all of the information necessary to display the map without clicking on any cells.
-   *
-   * There is only meant to be one `"MAP_HISTORY"` document in the database at one time, as it's essentially a
-   * cache for how `Claim`s, `Release`s, and `Redo`s should be presented to the user.
+   * The document of this type contains a `MapSnapshot` for a given time.
    */
-  MAP_HISTORY = "MAP_HISTORY",
+  MAP_SNAPSHOT = "MAP_SNAPSHOT",
   /**
    * Documents of this type represent public releases of province mods. 
    *
@@ -43,3 +41,5 @@ enum DocumentType {
    */
   BETHESDA_RELEASE = "BETHESDA_RELEASE",
 }
+
+export default MapChangeType
