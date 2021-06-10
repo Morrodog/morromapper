@@ -8,12 +8,12 @@
   'mouseover' event, which will emit the `CellXY` that the user's mouse currently occupies.
 -->
 <script lang="ts">
+  import { defineComponent, h } from 'vue'
+  import union                  from '@turf/union'
+
   import CellXY from '/src/types/cell-x-y.ts'
   
   import BACKGROUNDMAP_BOUND_LENGTH from '/src/constants/backgroundmap-bound-length.ts'
-
-  import { defineComponent, h } from 'vue'
-  import union                  from '@turf/union'
 
   import leafletEventHandlers from '/src/mixins/leaflet-event-handlers.ts'
 
@@ -50,7 +50,12 @@
     },
     data() {
       var leafletStorageKey = leafletStorage.length;
-      leafletStorage.push(L.polygon([]));
+      // The opacity of each polygon can be customized externally
+      // by using an 8-digit CSS hex color for the `color` prop.
+      leafletStorage.push(L.polygon([], {
+        "fillOpacity": 1.00,
+        "opacity": 1.00
+      }));
       return {
         leafletStorageKey
       }

@@ -1,7 +1,7 @@
 import MapChangeType from '/src/types/map-change-type.ts'
 import MapSnapshot   from '/src/types/map-snapshot.ts'
 import ClaimStatus   from '/src/types/claim-status.ts'
-import CellXY        from '/src/types/claim-x-y.ts'
+import CellXY        from '/src/types/cell-x-y.ts'
 import CellStatus    from '/src/types/cell-status.ts'
 import Document      from '/src/types/document.ts'
 
@@ -52,15 +52,16 @@ export default function generateMapSnapshot(documents: Document[], snapshotTime:
          */
         throw new Error(`generateClaimSnapshot invalidly given document of type \`${doc.type}\``);
     }
+    return snapshot;
   }, {
     // See `MapSnapshot` for details on these fields.
     bethesdaReleases: [],
-    releases [],
+    releases: [],
     inProgress: {},
     cellClaims: {}
   });
   // "Second pass"
-  claimSnapshot.inProgress = Object.entries(Object.entries(firstPass.cellClaims).reduce((cellToStatus, [cellKey, claims]) => {
+  mapSnapshot.inProgress = Object.entries(Object.entries(mapSnapshot.cellClaims).reduce((cellToStatus, [cellKey, claims]) => {
     cellToStatus[cellKey] = (() => {
       // If a cell's exterior work has been started, then it progresses to `EXTERIOR` from `PLANNING`.
       var exteriorClaimStatus = claimStatusFromClaims(claims, ClaimType.EXTERIOR, snapshotTime);
@@ -89,13 +90,13 @@ export default function generateMapSnapshot(documents: Document[], snapshotTime:
     [CellStatus.COMPLETED]: []
   });
   // "Third pass"
-  firstPass.cellClaims = Object.entries(firstPass.cellClaims).reduce((cellClaims, [cellKey, claimDocs]) => {
+  mapSnapshot.cellClaims = Object.entries(mapSnapshot.cellClaims).reduce((cellClaims, [cellKey, claimDocs]) => {
     cellClaims[cellKey] = claimDocs.map((claimDoc) => {
       return claimDoc.id;
     });
     return cellClaims;
   }, {});
-  return firstPass;
+  return mapSnapshot;
 }
 
 /**
