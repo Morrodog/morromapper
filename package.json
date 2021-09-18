@@ -9,6 +9,7 @@
   "dependencies": {
     "@turf/union": "6.3.0",
     "leaflet": "1.7.1",
+    "leaflet.fullscreen": "https://github.com/Morrodog/leaflet.fullscreen",
     "vue": "^3.0.5"
   },
   "devDependencies": {
