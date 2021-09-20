@@ -1,10 +1,10 @@
 <template>
-  <mm-map :backgroundmap-metadata="backgroundmapMetadata" @cellhover="hoverCell = $event">
+  <div>
     <!-- TODO: Deduplicate release and bethesdaRelease code here -->
     <mm-blob v-for="release in bethesdaReleases" :color="vanillaColor" :cells="release.releasedCells" :has-border="containsHoverCell(release.releasedCells, hoverCell)" />
     <mm-blob v-for="release in releases"         :color="releaseColor" :cells="release.releasedCells" :has-border="containsHoverCell(release.releasedCells, hoverCell)" />
     <mm-blob v-for="inProgressBlob in inProgressBlobs" :color="inProgressBlob.color" :cells="inProgressBlob.cells" />
-  </mm-map>
+  </div>
 </template>
 <script>
   import { defineComponent, computed, ref } from 'vue';

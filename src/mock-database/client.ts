@@ -12,16 +12,20 @@ import generateMapSnapshot from '/src/utils/generate-map-snapshot.ts'
 
 export default {
   getSnapshot(datetime) {
-    return Promise.resolve(generateMapSnapshot([
-      vvardenfell,
-      firemoth,
-      solstheim,
-      telvannis,
-      antediluvianSecrets,
-      sacredEast,
-      sacredEastUpdate,
-      aanthirrin,
-      oldEbonheart
-    ], datetime));
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(generateMapSnapshot([
+          vvardenfell,
+          firemoth,
+          solstheim,
+          telvannis,
+          antediluvianSecrets,
+          sacredEast,
+          sacredEastUpdate,
+          aanthirrin,
+          oldEbonheart
+        ], datetime));
+      }, 3000);
+    });
   }
 }
