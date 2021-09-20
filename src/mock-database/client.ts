@@ -9,6 +9,12 @@ import vvardenfell         from '/src/mock-database/bethesda-releases/vanilla.js
 import solstheim           from '/src/mock-database/bethesda-releases/bloodmoon.json'
 import firemoth            from '/src/mock-database/bethesda-releases/firemoth.json'
 
+import ro1 from '/src/mock-database/exterior-claims/RO_1.json'
+import ro2 from '/src/mock-database/exterior-claims/RO_2.json'
+import ro3 from '/src/mock-database/exterior-claims/RO_3.json'
+import ro4 from '/src/mock-database/exterior-claims/RO_4.json'
+
+
 import generateMapSnapshot from '/src/utils/generate-map-snapshot.ts'
 
 export default {
@@ -24,7 +30,11 @@ export default {
           sacredEast,
           sacredEastUpdate,
           aanthirrin,
-          oldEbonheart
+          oldEbonheart,
+          ro1,
+          ro2,
+          ro3,
+          ro4
         ], datetime));
       }, 3000);
     });

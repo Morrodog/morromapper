@@ -1,0 +1,15 @@
+{
+  "id": "asdfasdfasdfasdfkjhskdajhfaskdjhfaskdjfh",
+  "type": "CLAIM",
+  "url": "https://www.tamriel-rebuilt.org/claims/shipal-shin-02",
+  "cells": [{"x":39,"y":-38},{"x":40,"y":-38},{"x":41,"y":-38},{"x":41,"y":-39},{"x":40,"y":-39},{"x":39,"y":-39},{"x":40,"y":-40}],
+  "claimType": "EXTERIOR",
+  "name": "Random Ocean 1 (RO_1)",
+  "updates": [
+    {
+      "claimId": "asdfasdfasdfasdfkjhskdajhfaskdjhfaskdjfh",
+      "newClaimStatus": "NOT_STARTED",
+      "changeDate": "2019-07-02T00:00:00.000Z"
+    }
+  ]
+}

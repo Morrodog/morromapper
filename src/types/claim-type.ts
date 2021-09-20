@@ -15,7 +15,7 @@ enum ClaimType {
    * `ASSET` claims are not required by any `CellStatus`, but will cause a cell to appear
    * with `PLANNING` `CellStatus` if the cell had no claims before.
    */
-  ASSET    = "ASSET"
+  ASSET    = "ASSET",
   /**
    * `EXTERIOR` claims must be completed to pass from the `EXTERIOR` `CellStatus` to the `INTERIOR` `CellStatus`. 
    */
@@ -29,3 +29,5 @@ enum ClaimType {
    */
   QUEST    = "QUEST",
 }
+
+export default ClaimType

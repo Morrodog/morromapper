@@ -1,0 +1,25 @@
+{
+  "id": "lllllllll",
+  "type": "CLAIM",
+  "url": "https://www.tamriel-rebuilt.org/claims/thirr-valley-06-ud-hleryn",
+  "cells": [{"x":42,"y":-41},{"x":41,"y":-41},{"x":42,"y":-42},{"x":41,"y":-42},{"x":41,"y":-43},{"x":42,"y":-43},{"x":42,"y":-44},{"x":41,"y":-44}],
+  "claimType": "EXTERIOR",
+  "name": "Random Ocean 3 (RO_3)",
+  "updates": [
+    {
+      "claimId": "lllllllll",
+      "newClaimStatus": "NOT_STARTED",
+      "changeDate": "2019-07-02T00:00:00.000Z"
+    },
+    {
+      "claimId": "lllllllll",
+      "newClaimStatus": "IN_PROGRESS",
+      "changeDate": "2019-07-03T00:00:00.000Z"
+    },
+    {
+      "claimId": "lllllllll",
+      "newClaimStatus": "DONE",
+      "changeDate": "2019-07-04T00:00:00.000Z"
+    }
+  ]
+}
