@@ -2,12 +2,13 @@
   This component represents the Leaflet map ("map" in the sense of `L.Map`) that presents Tamriel to the user.
   It is responsible for managing the lifecycle of the `L.Map` it represents, but is not responsible for the lifecycles of Leaflet objects added to it.
 
-  It `provide`s two essential things for descendant components:
+  It `provide`s three essential things for descendant components:
   1. `'l'` is a function that returns an object containing the Leaflet objects pertinent to the `mm-map` instance.
      For details, see the declaration of `leafletStorage`.
   2. `'backgroundmapMetadata'` contains the information necessary to map from backgroundmap
      pixel space to TESIII cell space and Leaflet space. It's necessary to be able to place
      things on the backgroundmap relative to TESIII cells.
+  3. `'hoverCell'` is a CellXY representing the cell currently hovered over by the user.
 -->
 <template>
   <div style="height: 750px; width: 750px; background-color: #000000;">
@@ -63,6 +64,7 @@
     },
     setup(props) {
       var leafletStorageKey = ref(leafletStorage.length);
+      var hoverCell = ref({});
       leafletStorage[leafletStorageKey.value] = {
         map: null,
         cellsLayerGroup: L.layerGroup([]),
@@ -72,9 +74,10 @@
         return leafletStorage[leafletStorageKey.value];
       });
       provide('backgroundmapMetadata', props.backgroundmapMetadata);
+      provide('hoverCell', hoverCell);
       return {
         leafletStorageKey: leafletStorageKey,
-        hoverCell: ref({})
+        hoverCell: hoverCell
       };
     },
     methods: {

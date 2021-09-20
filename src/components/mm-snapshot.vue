@@ -7,7 +7,7 @@
   </div>
 </template>
 <script>
-  import { defineComponent, computed, ref } from 'vue';
+  import { defineComponent, computed, ref, inject } from 'vue';
 
   import CELL_STATUS_COLORS from '/src/constants/cell-status-colors.ts';
 
@@ -33,11 +33,11 @@
     },
     setup(props) {
       return {
+        hoverCell: inject('hoverCell'),
         releases: ref(props.mapSnapshot.releases),
         bethesdaReleases: ref(props.mapSnapshot.bethesdaReleases),
         vanillaColor: CELL_STATUS_COLORS[CellStatus.VANILLA],
         releaseColor: CELL_STATUS_COLORS[CellStatus.RELEASED],
-        hoverCell: ref(null),
         inProgressBlobs: computed(() => {
           return Object.entries(props.mapSnapshot.inProgress).map(([cellStatus, cells]) => {
             return {
