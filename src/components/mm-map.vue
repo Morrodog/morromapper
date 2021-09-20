@@ -1,24 +1,24 @@
 <!--
   This component represents the Leaflet map ("map" in the sense of `L.Map`) that presents Tamriel to the user.
-  It is responsible for managing the lifecycle of the `L.Map` it represents, but is not responsible for the lifecycles of the Leaflet objects it contains.
+  It is responsible for managing the lifecycle of the `L.Map` it represents, but is not responsible for the lifecycles of Leaflet objects added to it.
 
-  It provides two essential things for descendant components:
-  1. `'layerGroup'`, onto which layers can be added to be added to the map.
-     An `L.LayerGroup` is used instead of the map itself because the map depends on
-     having a `div` element to use, so it can't be initialized until the first render is
-     complete, which caused problems.
+  It `provide`s two essential things for descendant components:
+  1. `'l'` is a function that returns an object containing the Leaflet objects pertinent to the `mm-map` instance.
+     For details, see the declaration of `leafletStorage`.
   2. `'backgroundmapMetadata'` contains the information necessary to map from backgroundmap
      pixel space to TESIII cell space and Leaflet space. It's necessary to be able to place
      things on the backgroundmap relative to TESIII cells.
 -->
 <template>
-  <div style="height: 1000px; background-color: #000000;">
+  <div style="height: 750px; width: 750px; background-color: #000000;">
     <slot />
   </div>
 </template>
 <script lang="ts">
   import { defineComponent, reactive, provide, ref } from 'vue'
   import * as L from 'leaflet';
+  import leafletFullscreenInit from 'leaflet.fullscreen'
+  import 'leaflet.fullscreen/Control.FullScreen.css'
 
   import BOUNDS from '/src/constants/backgroundmap-bounds.ts'
 
@@ -27,6 +27,8 @@
   import CellXY from '/src/types/cell-x-y.ts'
 
   import gridmapMetadata from '/src/assets/gridmap-metadata.json'
+
+  leafletFullscreenInit(L);
 
   /** 
    * The objects created by Leaflet (`L.Map` and `L.LayerGroup` in particular)
@@ -89,6 +91,9 @@
           updateWhenIdle: true,
           preferCanvas: true
         });
+
+        L.control.fullscreen({}).addTo(map);
+
         this.l().cellsLayerGroup.addTo(map);
         this.l().blobsLayerGroup.addTo(map);
         leafletStorage[this.leafletStorageKey].map = map;
