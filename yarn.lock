@@ -357,11 +357,18 @@ json5@^1.0.1:
   dependencies:
     minimist "^1.2.0"
 
+leaflet-modal@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/leaflet-modal/-/leaflet-modal-0.2.0.tgz#f631ba22d1f3a13ebf22a110c3f0686dc224c772"
+  integrity sha512-vHg6RFk1fOu65oB6q5ENFiAWUA1xlefLqIPMnij58371+4odeprsaiNnO9E/Gct+5a/x1VsJJ9ekoHDd9/7Lhg==
+  dependencies:
+    leaflet "^1.6.0"
+
 "leaflet.fullscreen@https://github.com/Morrodog/leaflet.fullscreen":
   version "2.0.0"
   resolved "https://github.com/Morrodog/leaflet.fullscreen#5031bcb0c5bc55399a526dcb68711f4784bf6142"
 
-leaflet@1.7.1:
+leaflet@1.7.1, leaflet@^1.6.0:
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.7.1.tgz#10d684916edfe1bf41d688a3b97127c0322a2a19"
   integrity sha512-/xwPEBidtg69Q3HlqPdU3DnrXQOvQU/CCHA1tcDQVzOwm91YMYaILjNp7L4Eaw5Z4sOYdbBz6koWyibppd8Zqw==

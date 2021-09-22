@@ -34,14 +34,18 @@
    * The objects created by Leaflet (`L.Map` and `L.LayerGroup` in particular)
    * create lag when made reactive by Vue. However, I still want individual `mm-map`
    * instances to have their own instances of these things, so a module-level variable
-   * would not be suitable. To work around this, each instance of `mm-map` puts its
-   * big Leaflet objects into its position in this array.
+   * would not be suitable.
+   *
+   * To work around this, two approaches are taken:
+   * 1. Layers are initialized synchronously, so layers can be made available to child components, and added when the map is ready.
+   * 2. Components that can't do this can instead use a Promise that resolves when the map is initialized.
    *
    * The stored objects have this shape:
    * {
    *   map: L.Map
    *   cellsLayerGroup: L.LayerGroup
    *   blobsLayerGroup: L.LayerGroup
+   *   mapInitialization
    * }
    */
   var leafletStorage = [];
@@ -67,6 +71,22 @@
         map: null,
         cellsLayerGroup: L.layerGroup([]),
         blobsLayerGroup: L.layerGroup([]),
+        /*
+         * To implement a `mapInitialization` property as a promise, we need to synchronously declare a Promise here,
+         * and still have the `resolve` function available on and in `mounted`. To accomplish this,
+         * a private property is added to the provided object containing the `resolve` function created
+         * for the `mapInitialization` `Promise`. This property are not intended for use outside of `mm-map`.
+        */
+        ...(() => {
+          var resolveInit = null;
+          var mapInit = new Promise((resolve, reject) => {
+            resolveInit = resolve;
+          });
+          return {
+            mapInitialization: mapInit,
+            _mapInitializationResolve: resolveInit,
+          };
+        })()
       };
       provide('l', () => {
         return leafletStorage[leafletStorageKey.value];
@@ -129,6 +149,7 @@
     },
     mounted() {
       this.initializeMap(this.$el);
+      this.l()._mapInitializationResolve();
     },
   })
 </script>
