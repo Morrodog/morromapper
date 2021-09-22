@@ -43,7 +43,7 @@ export default function generateMapSnapshot(documents: Document[], snapshotTime:
           if(!snapshot.cellClaims[cellKey]) {
             snapshot.cellClaims[cellKey] = [];
           }
-          snapshot.cellClaims[cellKey].push(doc.id);
+          snapshot.cellClaims[cellKey].push(doc);
         });
         break;
         default:
@@ -113,15 +113,15 @@ export default function generateMapSnapshot(documents: Document[], snapshotTime:
  */
 const claimStatusFromClaims = function claimStatusFromClaims (claims, claimType, snapshotTime) {
   var claimStatuses =  claims.filter((claim) => { // First, we isolate the claims of the relevant type.
-    return claim.type === claimType;
+    return claim.claimType === claimType;
   }).map((exteriorClaim) => { // Next, we get the status of each claim at the given `snapshotTime`
-    var relevantUpdates = exteriorClaim.claimUpdates.filter((update) => {
-      return update.changeDate <=  snapshotTime;
+    var relevantUpdates = exteriorClaim.updates.filter((update) => {
+      return update.changeDate <= snapshotTime;
     });
     if(relevantUpdates.length === 0) {
       return ClaimStatus.NOT_STARTED;
     } else {
-      return relevantUpdates.slice(-1)[0];
+      return relevantUpdates.slice(-1)[0].newClaimStatus;
     }
   }).filter((claimStatus) => { // Next, we filter out any `CLOSED` claims.
     return claimStatus !== ClaimStatus.CLOSED;

@@ -1,0 +1,25 @@
+{
+  "id": "iiiiasdflafll",
+  "type": "CLAIM",
+  "url": "https://www.tamriel-rebuilt.org/claims/sadrathim-5",
+  "cells": [{"x":45,"y":-39}],
+  "claimType": "INTERIOR",
+  "name": "Dogdan Grotto",
+  "updates": [
+    {
+      "claimId": "iiiiasdflafll",
+      "newClaimStatus": "NOT_STARTED",
+      "changeDate": "2019-07-02T00:00:00.000Z"
+    },
+    {
+      "claimId": "iiiiasdflafll",
+      "newClaimStatus": "IN_PROGRESS",
+      "changeDate": "2019-07-03T00:00:00.000Z"
+    },
+    {
+      "claimId": "iiiiasdflafll",
+      "newClaimStatus": "DONE",
+      "changeDate": "2019-07-05T00:00:00.000Z"
+    }
+  ]
+}

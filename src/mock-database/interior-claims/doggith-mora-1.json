@@ -1,0 +1,25 @@
+{
+  "id": "sssss33l",
+  "type": "CLAIM",
+  "url": "https://www.tamriel-rebuilt.org/claims/ald-marak-1-main-tower",
+  "cells": [{"x":38,"y":-41}],
+  "claimType": "INTERIOR",
+  "name": "Doggith Mora, Henry's House",
+  "updates": [
+    {
+      "claimId": "sssss33l",
+      "newClaimStatus": "NOT_STARTED",
+      "changeDate": "2019-07-03T00:00:00.000Z"
+    },
+    {
+      "claimId": "sssss33l",
+      "newClaimStatus": "IN_PROGRESS",
+      "changeDate": "2019-07-04T00:00:00.000Z"
+    },
+    {
+      "claimId": "sssss33l",
+      "newClaimStatus": "DONE",
+      "changeDate": "2019-07-06T00:00:00.000Z"
+    }
+  ]
+}

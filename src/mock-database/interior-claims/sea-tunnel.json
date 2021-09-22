@@ -1,0 +1,25 @@
+{
+  "id": "iiiiasdflallsss",
+  "type": "CLAIM",
+  "url": "https://www.tamriel-rebuilt.org/claims/ald-marak-5",
+  "cells": [{"x":38,"y":-43}, {"x":39,"y":-43}],
+  "claimType": "INTERIOR",
+  "name": "Sea Tunnel",
+  "updates": [
+    {
+      "claimId": "iiiiasdflallsss",
+      "newClaimStatus": "NOT_STARTED",
+      "changeDate": "2019-07-03T00:00:00.000Z"
+    },
+    {
+      "claimId": "iiiiasdflallsss",
+      "newClaimStatus": "IN_PROGRESS",
+      "changeDate": "2019-07-03T01:00:00.000Z"
+    },
+    {
+      "claimId": "iiiiasdflallsss",
+      "newClaimStatus": "DONE",
+      "changeDate": "2019-07-03T01:00:00.000Z"
+    }
+  ]
+}

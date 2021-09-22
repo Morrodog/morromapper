@@ -14,6 +14,45 @@ import ro2 from '/src/mock-database/exterior-claims/RO_2.json'
 import ro3 from '/src/mock-database/exterior-claims/RO_3.json'
 import ro4 from '/src/mock-database/exterior-claims/RO_4.json'
 
+import interior1 from '/src/mock-database/interior-claims/ald-duhg-0.json'
+import interior2 from '/src/mock-database/interior-claims/ald-duhg-1.json'
+import interior3 from '/src/mock-database/interior-claims/ald-duhg-10.json'
+import interior4 from '/src/mock-database/interior-claims/ald-duhg-11.json'
+import interior5 from '/src/mock-database/interior-claims/ald-duhg-12.json'
+import interior6 from '/src/mock-database/interior-claims/ald-duhg-13.json'
+import interior7 from '/src/mock-database/interior-claims/ald-duhg-14.json'
+import interior8 from '/src/mock-database/interior-claims/ald-duhg-15.json'
+import interior9 from '/src/mock-database/interior-claims/ald-duhg-2.json'
+import interior10 from '/src/mock-database/interior-claims/ald-duhg-3.json'
+import interior11 from '/src/mock-database/interior-claims/ald-duhg-4.json'
+import interior12 from '/src/mock-database/interior-claims/ald-duhg-5.json'
+import interior13 from '/src/mock-database/interior-claims/ald-duhg-6.json'
+import interior14 from '/src/mock-database/interior-claims/ald-duhg-7.json'
+import interior15 from '/src/mock-database/interior-claims/ald-duhg-8.json'
+import interior16 from '/src/mock-database/interior-claims/ald-duhg-9.json'
+import interior17 from '/src/mock-database/interior-claims/dogdan-grotto.json'
+import interior18 from '/src/mock-database/interior-claims/doggith-mora-1.json'
+import interior19 from '/src/mock-database/interior-claims/doggith-mora-2.json'
+import interior20 from '/src/mock-database/interior-claims/doggith-mora-3.json'
+import interior21 from '/src/mock-database/interior-claims/fort-dogmoth-0.json'
+import interior22 from '/src/mock-database/interior-claims/fort-dogmoth-1.json'
+import interior23 from '/src/mock-database/interior-claims/fort-dogmoth-10.json'
+import interior24 from '/src/mock-database/interior-claims/fort-dogmoth-2.json'
+import interior25 from '/src/mock-database/interior-claims/fort-dogmoth-3.json'
+import interior26 from '/src/mock-database/interior-claims/fort-dogmoth-4.json'
+import interior27 from '/src/mock-database/interior-claims/fort-dogmoth-5.json'
+import interior28 from '/src/mock-database/interior-claims/fort-dogmoth-6.json'
+import interior29 from '/src/mock-database/interior-claims/fort-dogmoth-7.json'
+import interior30 from '/src/mock-database/interior-claims/fort-dogmoth-8.json'
+import interior31 from '/src/mock-database/interior-claims/fort-dogmoth-9.json'
+import interior32 from '/src/mock-database/interior-claims/sea-tunnel.json'
+import interior33 from '/src/mock-database/interior-claims/shashlyk-1.json'
+import interior34 from '/src/mock-database/interior-claims/shashlyk-2.json'
+import interior35 from '/src/mock-database/interior-claims/shashlyk-3.json'
+import interior36 from '/src/mock-database/interior-claims/shipwreck-1.json'
+import interior37 from '/src/mock-database/interior-claims/shipwreck-2.json'
+
+var interiors = [ interior1, interior2, interior3, interior4, interior5 , interior6 , interior7 , interior8 , interior9 , interior10, interior11, interior12, interior13, interior14, interior15, interior16, interior17, interior18, interior19, interior20, interior21, interior22, interior23, interior24, interior25, interior26, interior27, interior28, interior29, interior30, interior31, interior32, interior33, interior34, interior35, interior36, interior37];
 
 import generateMapSnapshot from '/src/utils/generate-map-snapshot.ts'
 
@@ -34,9 +73,10 @@ export default {
           ro1,
           ro2,
           ro3,
-          ro4
+          ro4,
+          ...interiors
         ], datetime));
-      }, 3000);
+      }, 500);
     });
   }
 }

@@ -1,0 +1,20 @@
+{
+  "id": "assssfs33ls77f",
+  "type": "CLAIM",
+  "url": "https://www.tamriel-rebuilt.org/claims/sadrathim-7",
+  "cells": [{"x":37,"y":-41}],
+  "claimType": "INTERIOR",
+  "name": "Shashlyk, Earl's raft",
+  "updates": [
+    {
+      "claimId": "assssfs33ls77f",
+      "newClaimStatus": "NOT_STARTED",
+      "changeDate": "2019-07-03T01:00:00.000Z"
+    },
+    {
+      "claimId": "assssfs33ls77f",
+      "newClaimStatus": "IN_PROGRESS",
+      "changeDate": "2019-07-05T20:00:00.000Z"
+    }
+  ]
+}

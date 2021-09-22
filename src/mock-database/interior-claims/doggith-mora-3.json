@@ -1,0 +1,25 @@
+{
+  "id": "asssss33ls",
+  "type": "CLAIM",
+  "url": "https://www.tamriel-rebuilt.org/claims/sadrathim-6",
+  "cells": [{"x":38,"y":-41}],
+  "claimType": "INTERIOR",
+  "name": "Doggith Mora, Drake's House",
+  "updates": [
+    {
+      "claimId": "asssss33ls",
+      "newClaimStatus": "NOT_STARTED",
+      "changeDate": "2019-07-02T00:00:00.000Z"
+    },
+    {
+      "claimId": "asssss33ls",
+      "newClaimStatus": "IN_PROGRESS",
+      "changeDate": "2019-07-03T10:00:00.000Z"
+    },
+    {
+      "claimId": "asssss33ls",
+      "newClaimStatus": "DONE",
+      "changeDate": "2019-07-04T20:00:00.000Z"
+    }
+  ]
+}

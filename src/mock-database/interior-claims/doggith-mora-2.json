@@ -1,0 +1,25 @@
+{
+  "id": "asssss33l",
+  "type": "CLAIM",
+  "url": "https://www.tamriel-rebuilt.org/claims/othmura-16",
+  "cells": [{"x":38,"y":-41}],
+  "claimType": "INTERIOR",
+  "name": "Doggith Mora, Mom's House",
+  "updates": [
+    {
+      "claimId": "asssss33l",
+      "newClaimStatus": "NOT_STARTED",
+      "changeDate": "2019-07-04T00:00:00.000Z"
+    },
+    {
+      "claimId": "asssss33l",
+      "newClaimStatus": "IN_PROGRESS",
+      "changeDate": "2019-07-04T10:00:00.000Z"
+    },
+    {
+      "claimId": "asssss33l",
+      "newClaimStatus": "DONE",
+      "changeDate": "2019-07-04T20:00:00.000Z"
+    }
+  ]
+}
