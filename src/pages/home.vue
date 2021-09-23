@@ -1,7 +1,8 @@
 <template>
   <div>
     <mm-map :backgroundmap-metadata="gridmapMetadata">
-      <mm-dialog v-model:is-open="dialogOpen">
+      <!--<mm-dialog v-model:is-open="dialogOpen">-->
+      <mm-dialog is-open>
         <button @click="test = !test">toggle</button>
           {{ test }}
       </mm-dialog>

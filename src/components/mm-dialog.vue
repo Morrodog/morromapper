@@ -1,3 +1,20 @@
+<!--
+  `mm-dialog` overlays a dialog box on top of the `mm-map` in which it is nested.
+
+  Its basic interface is one prop, `isOpen`, which determines whether it's visible, and
+  a default slot whose contents are (reactively) rendered in the dialog.
+
+  A few usage notes:
+  1. Only one `mm-dialog` may exist within an `mm-map`.
+  2. The map underneath will not be dimmed, and will still be responsive.
+  3. Do not use it with a static value for the `is-open` prop. 
+     Right now, it expects to be used with v-model, and will get stuck
+     closed if the user hits the "x" button in the corner
+
+  An implementation note:
+  1. The component has an invisible dependency on Fontawesome. See https://github.com/NBTSolutions/Leaflet.Dialog/issues/26
+     Fontawesome is included for the whole project in `/src/main.ts`.
+-->
 <script lang="ts">
   import 'leaflet-dialog'
   import 'leaflet-dialog/Leaflet.Dialog.css'
@@ -16,7 +33,7 @@
         var slotContainerId = `slot-div-${v4()}`;
         var dialog = new L.Control.Dialog({}).setContent(`
           <div class="leaflet-control-dialog-contents-spacer"></div>
-          <div id="${dialogDivId}">test</div>
+          <div id="${dialogDivId}"></div>
         `); 
         return {
           dialog,
@@ -27,13 +44,23 @@
     },
     created() {
       this.l().mapInitialization.then(() => {
-        this.dialog.addTo(this.l().map)
+        /*
+         * Without this protection, the current behavior is for the first mm-dialog to be replaced. 
+         * In the future, support for multiple concurrently existing `mm-dialog`s may be added.
+         *
+         * Note that the `containsDialog` field will not exist for the first (and/or only) `mm-dialog`
+         * added to an `mm-map`, but it will be `false` if an `mm-dialog` was removed from a map,
+         * and another one added.
+         */
+        if(!!this.l().map.containsDialog) {
+          throw new Error("Only one `mm-dialog` may exist inside of an `mm-map` at the same time.");
+        } else {
+          this.l().map.containsDialog = true;
+        }
+
+        this.dialog.addTo(this.l().map);
         this.dialog.showClose();
         this.dialog.unfreeze();
-        // See https://github.com/NBTSolutions/Leaflet.Dialog/issues/26
-        this.dialog._closeNode.innerHTML = "X";
-        //this.dialog._resize.innerHTML = "X";
-        //this.dialog._drag.innerHTML = "X";
         this.l().map.on('dialog:closed', (dialogClosed) => {
           if(dialogClosed._leafletId === this.dialog._leafletId && this.isOpen) {
            this.autoIsOpen = false;
@@ -109,6 +136,7 @@
     },
     beforeDestroy() {
       this.dialog.destroy();
+      this.l().map.containsDialog = false;
     }
   })
 </script>

@@ -254,6 +254,11 @@ estree-walker@^2.0.2:
   resolved "https://registry.yarnpkg.com/estree-walker/-/estree-walker-2.0.2.tgz#52f010178c2a4c117a7757cfe942adb7d2da4cac"
   integrity sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==
 
+font-awesome@4.7.0:
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/font-awesome/-/font-awesome-4.7.0.tgz#8fa8cf0411a1a31afd07b06d2902bb9fc815a133"
+  integrity sha1-j6jPBBGhoxr9B7BtKQK7n8gVoTM=
+
 fontawesome@~4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/fontawesome/-/fontawesome-4.5.0.tgz#292915ce87e97341fd1dd2f9bd8615d3b8f55fff"
@@ -369,18 +374,11 @@ leaflet-dialog@1.0.5:
   dependencies:
     fontawesome "~4.5.0"
 
-leaflet-modal@0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/leaflet-modal/-/leaflet-modal-0.2.0.tgz#f631ba22d1f3a13ebf22a110c3f0686dc224c772"
-  integrity sha512-vHg6RFk1fOu65oB6q5ENFiAWUA1xlefLqIPMnij58371+4odeprsaiNnO9E/Gct+5a/x1VsJJ9ekoHDd9/7Lhg==
-  dependencies:
-    leaflet "^1.6.0"
-
 "leaflet.fullscreen@https://github.com/Morrodog/leaflet.fullscreen":
   version "2.0.0"
   resolved "https://github.com/Morrodog/leaflet.fullscreen#5031bcb0c5bc55399a526dcb68711f4784bf6142"
 
-leaflet@1.7.1, leaflet@^1.6.0:
+leaflet@1.7.1:
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.7.1.tgz#10d684916edfe1bf41d688a3b97127c0322a2a19"
   integrity sha512-/xwPEBidtg69Q3HlqPdU3DnrXQOvQU/CCHA1tcDQVzOwm91YMYaILjNp7L4Eaw5Z4sOYdbBz6koWyibppd8Zqw==
