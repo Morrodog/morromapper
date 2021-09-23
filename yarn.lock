@@ -254,6 +254,16 @@ estree-walker@^2.0.2:
   resolved "https://registry.yarnpkg.com/estree-walker/-/estree-walker-2.0.2.tgz#52f010178c2a4c117a7757cfe942adb7d2da4cac"
   integrity sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==
 
+font-awesome@4.7.0:
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/font-awesome/-/font-awesome-4.7.0.tgz#8fa8cf0411a1a31afd07b06d2902bb9fc815a133"
+  integrity sha1-j6jPBBGhoxr9B7BtKQK7n8gVoTM=
+
+fontawesome@~4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/fontawesome/-/fontawesome-4.5.0.tgz#292915ce87e97341fd1dd2f9bd8615d3b8f55fff"
+  integrity sha1-KSkVzofpc0H9HdL5vYYV07j1X/8=
+
 fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
@@ -357,6 +367,13 @@ json5@^1.0.1:
   dependencies:
     minimist "^1.2.0"
 
+leaflet-dialog@1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/leaflet-dialog/-/leaflet-dialog-1.0.5.tgz#fbba07389f937072e2117264d4add7a47b556972"
+  integrity sha512-jmt7bPazPawnEv7XVNDvhkdfPM3OXhlym+6axPrL0hICWIc0eLLMDBADlqMTXT0WRMvbVKxVz7/FwceaiAjNFQ==
+  dependencies:
+    fontawesome "~4.5.0"
+
 "leaflet.fullscreen@https://github.com/Morrodog/leaflet.fullscreen":
   version "2.0.0"
   resolved "https://github.com/Morrodog/leaflet.fullscreen#5031bcb0c5bc55399a526dcb68711f4784bf6142"
@@ -424,6 +441,11 @@ minimist@^1.2.0, minimist@^1.2.5:
   integrity sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==
   dependencies:
     minimist "^1.2.5"
+
+mount-vue-component@0.10.1:
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/mount-vue-component/-/mount-vue-component-0.10.1.tgz#82174c53877453557b599d2b74e1f7d1d60011ff"
+  integrity sha512-EBtRP16dAIB5DdT1hsbFhkGN7WlRACIy4QF0O4MmG/xIOPZpSAbUK7cnzmQRPfCX2yH9sR/EeSK7dt6zJnxF2A==
 
 nanoid@^3.1.23:
   version "3.1.25"
@@ -635,6 +657,11 @@ util-deprecate@^1.0.2, util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
+
+uuid@8.3.2:
+  version "8.3.2"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
+  integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
 vite@^2.3.4:
   version "2.5.8"
