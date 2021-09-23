@@ -1,55 +1,49 @@
-<!--
-  Two cannot exist concurrently
--->
 <script lang="ts">
-  /*
-   * A few notes on `'leaflet-modal'`:
-   * 1. As a side effect of importation, it modifies the `L.Map` instance to add modal functionality to the map itself.
-   * 2. Because `'leaflet-modal'` adds modal functionality directly to the `L.Map`,
-   *    it isn't possible for `mm-dialog` instances to have their own objects to manage.
-   * 3. It takes an HTML string for content, so to make a proper Vue slot, a workaround must be done.
-   * 4. As another side-effect, it adds a variable named `map` to the global scope containing the current `L.Map`.
-   * 5. Modifying the `L` shared by all of the Leaflet components in this component is a bit dirty, but
-   *    I believe that it is the lesser of two evils between dirtying `L` outside of `mm-map`, and
-   *    mixing concerns inside of `mm-map.vue` itself.
-  */
-  import 'leaflet-modal'
-  /*
-   * The workaround for the fact that `leaflet-modal` only takes a string for the modal's contents
-   * is to have an empty div as the modal's string, and to use an ID on that div to replace its contents dynamically.
-   * Because IDs are globally scoped, we have to be careful about collision, so I've used a UUID and added a string
-   * to the beginning so that it doesn't fit the UUID pattern. This should virtually guarantee that no collisions will happen.
-  */
-  const divId = 'modal-container-ccca8adf-69ae-467f-9a07-4815bbbefe66';
-  
+  import 'leaflet-dialog'
+  import 'leaflet-dialog/Leaflet.Dialog.css'
+
+  import renderVNodes from '/src/utils/render-vnodes.ts'
+
+  import { v4 } from 'uuid'
+
   import { defineComponent, h } from 'vue'
 
   export default defineComponent({
     inject: ['l'],
+    unreactive: {
+      ...(() => {
+        var dialogDivId = `dialog-div-${v4()}`;
+        var slotContainerId = `slot-div-${v4()}`;
+        var dialog = new L.Control.Dialog({}).setContent(`
+          <div class="leaflet-control-dialog-contents-spacer"></div>
+          <div id="${dialogDivId}">test</div>
+        `); 
+        return {
+          dialog,
+          dialogDivId,
+          slotContainerId
+        };
+      })()
+    },
     created() {
-      setTimeout(() => {
-        this.$emit('update:open', true);
-      }, 1000);
       this.l().mapInitialization.then(() => {
-        /*
-         * The map may only contain one `mm-dialog` at a time. The reasons for this are as follow:
-         * 1. The modal functionality offered by leaflet-modal only supports showing one modal at a time.
-         * 2. `mm-dialog` will always look the same except for the content inside of its default slot, so
-         *      there's nothing that can be accomplished with multiple `mm-dialog`s that can't be done 
-         *      more cleanly by changing the content of a singular `mm-dialog`.
-         * 3. `divId` is defined at the module level instead of the instance level, so the `mm-dialog`s would all
-         *      putting their slot content into the same `div` in the modal. Changing this is not impossible, though,
-         *      so this is a more minor concern.
-         */
-        if(this.l().map.mapContainsDialog) {
-          throw new Error("Two `mm-dialogs` exist inside of an `mm-map` at the same time. This is not supported.");
-        }
-
-        /* 
-         * If this is the first `mm-dialog` added to an `mm-map` (as it almost always will be), then
-         * `mapContainsDialog` will not preexist as a property of `this.l().mapContainsDialog`.
-         */
-        this.l().map.mapContainsDialog = true;
+        this.dialog.addTo(this.l().map)
+        this.dialog.showClose();
+        this.dialog.unfreeze();
+        // See https://github.com/NBTSolutions/Leaflet.Dialog/issues/26
+        this.dialog._closeNode.innerHTML = "X";
+        //this.dialog._resize.innerHTML = "X";
+        //this.dialog._drag.innerHTML = "X";
+        this.l().map.on('dialog:closed', (dialogClosed) => {
+          if(dialogClosed._leafletId === this.dialog._leafletId && this.isOpen) {
+           this.autoIsOpen = false;
+          }
+        });
+        this.l().map.on('dialog:opened', (dialogOpened) => {
+          if(dialogOpened._leafletId === this.dialog._leafletId && !this.isOpen) {
+           this.autoIsOpen = true;
+          }
+        });
       });
     },
     props: {
@@ -57,39 +51,79 @@
        * Whether the dialog and its contents are currently visible to the user.
        * Intended to be used as a `v-model` prop by the parent.
        */
-      open: {
+      isOpen: {
         type: Boolean,
         required: true
       }
     },
-    data() {
-      return {
-        modalContentString: `<div id="${divId}">test</div>`
-      };
+    computed: {
+      autoIsOpen: {
+        get() {
+          return this.isOpen;
+        },
+        set(newVal) {
+          this.$emit('update:isOpen', newVal);
+        }
+      },
+      dialog() {
+        return this.$options.unreactive.dialog;
+      },
+      dialogDivId() {
+        return this.$options.unreactive.dialogDivId;
+      },
+      slotContainerId() {
+        return this.$options.unreactive.slotContainerId;
+      },
     },
-    /*computed: {
-      a
-    },*/
     watch: {
-      open: {
+      isOpen: {
         immediate: true,
         handler(newVal) {
           this.l().mapInitialization.then(() => {
             if(newVal) {
-              debugger;
-              this.l().map.openModal({
-                content: this.modalContentString
-              });
+              this.dialog.open();
             } else {
-              this.l().map.closeModal();
+              this.dialog.close();
             }
-          })
+          });
         }
       }
     },
-    methods: {},
     render() {
-      return null;
+      this.l().mapInitialization.then(() => {
+        var dialogDiv = document.getElementById(this.dialogDivId);
+        dialogDiv.innerHTML = "";
+        dialogDiv.appendChild(renderVNodes(this.$slots.default()));
+      });
+      /* To get reactivity in the dialog, we need to return the slot content from the
+       * render function even if we don't want the element in the default slot to be 
+       * rendered inside of the actual `mm-map` element hierarchy. To get around this, 
+       * we return the slots, but we hide them from the user.
+       */
+      return h(
+        'div', {
+          style: "display: none;"
+        },
+        this.$slots.default()
+      );
+    },
+    beforeDestroy() {
+      this.dialog.destroy();
     }
   })
 </script>
+<style>
+  /*
+   * I want a little border below the X that closes the dialog.
+   */
+  .leaflet-control-dialog-contents {
+    border-top: 1px solid #eeeeee;
+  }
+
+  /*
+   * This is to make it so that there's a little space between the border and the contents of the dialog
+   */
+  .leaflet-control-dialog-contents-spacer {
+    height: 5px;
+  }
+</style>

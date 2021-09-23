@@ -1,8 +1,12 @@
 <template>
   <div>
     <mm-map :backgroundmap-metadata="gridmapMetadata">
-      <mm-dialog :open="true" />
+      <mm-dialog v-model:is-open="dialogOpen">
+        <button @click="test = !test">toggle</button>
+          {{ test }}
+      </mm-dialog>
     </mm-map>
+    <button @click="dialogOpen = !dialogOpen">toggle dialog</button>
   </div>
 </template>
 <script>
@@ -25,6 +29,8 @@
     },
     data() {
       return {
+        dialogOpen: true,
+        test: false,
         selectedCells: [],
         gridmapMetadata: gridmapMetadata,
       };

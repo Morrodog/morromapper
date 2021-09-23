@@ -9,8 +9,11 @@
   "dependencies": {
     "@turf/union": "6.3.0",
     "leaflet": "1.7.1",
+    "leaflet-dialog": "1.0.5",
     "leaflet-modal": "0.2.0",
     "leaflet.fullscreen": "https://github.com/Morrodog/leaflet.fullscreen",
+    "mount-vue-component": "0.10.1",
+    "uuid": "8.3.2",
     "vue": "^3.0.5"
   },
   "devDependencies": {

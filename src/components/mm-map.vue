@@ -46,7 +46,7 @@
    *   cellsLayerGroup: L.LayerGroup
    *   blobsLayerGroup: L.LayerGroup
    *   mapInitialization
-   * }
+   * }-->
    */
   var leafletStorage = [];
 
