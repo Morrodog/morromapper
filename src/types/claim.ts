@@ -19,7 +19,7 @@ import CellXY      from '/src/types/cell-x-y.ts'
  * A subtle benefit of this is that it minimizes the impression
  * that progress cells are moving "backwards" every time a new claim is added.
  */
-interface Claim {
+interface Claim extends Document {
   type: "CLAIM";
   /**
    * The ID is intended to be a UUID used as a database key.

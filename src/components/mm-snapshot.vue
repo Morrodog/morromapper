@@ -1,7 +1,7 @@
 <template>
   <div>
     <mm-blob v-for="borderBlob in borderBlobs" :color="colorForStatus(borderBlob.cellStatus)" :cells="borderBlob.cells" :has-border="containsHoverCell(borderBlob.cells, hoverCell)" />
-    <!--<mm-blob v-for="statusBlob in statusBlobs" :color="inProgressBlob.color" :cells="inProgressBlob.cells" />-->
+    <mm-blob v-for="statusBlob in statusBlobs" :color="colorForStatus(statusBlob.cellStatus)" :cells="statusBlob.cells" />
   </div>
 </template>
 <script>
@@ -60,6 +60,14 @@
     computed: {
       borderBlobs() {
         return this.mapSnapshot.borderBlobs;
+      },
+      statusBlobs() {
+        return Object.entries(this.mapSnapshot.statusBlobs).map((entry) => {
+          return {
+            cellStatus: entry[0],
+            cells: entry[1]
+          };
+        });
       }
     }
   });

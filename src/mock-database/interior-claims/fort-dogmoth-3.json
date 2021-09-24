@@ -1,1 +1,4 @@
-{"id":"9ae2970a-2ded-4f6c-8627-3a174c3a8dc2","type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/othmura-8","cells":[{"x":37,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Bedroom","updates":[{"claimId":"9ae2970a-2ded-4f6c-8627-3a174c3a8dc2","newClaimStatus":"NOT_STARTED","changeDate":"2019-07-03T01:00:00.000Z"},{"claimId":"9ae2970a-2ded-4f6c-8627-3a174c3a8dc2","newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-04T01:00:00.000Z"}]}
+{
+  "id":"9ae2970a-2ded-4f6c-8627-3a174c3a8dc2",
+  "docCreatedDate": "2019-07-03T01:00:00.000Z",
+  "type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/othmura-8","cells":[{"x":37,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Bedroom","updates":[{"newClaimStatus":"NOT_STARTED","changeDate":"2019-07-03T01:00:00.000Z"},{"newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-04T01:00:00.000Z"}]}

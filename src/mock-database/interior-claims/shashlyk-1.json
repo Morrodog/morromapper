@@ -1,18 +1,17 @@
 {
   "id": "asssss33ls77f",
   "type": "CLAIM",
+  "docCreatedDate": "2019-07-06T01:00:00.000Z",
   "url": "https://www.tamriel-rebuilt.org/claims/sadrathim-temple",
   "cells": [{"x":37,"y":-41}],
   "claimType": "INTERIOR",
   "name": "Shashlyk, Don's raft",
   "updates": [
     {
-      "claimId": "asssss33ls77f",
       "newClaimStatus": "NOT_STARTED",
       "changeDate": "2019-07-06T01:00:00.000Z"
     },
     {
-      "claimId": "asssss33ls77f",
       "newClaimStatus": "IN_PROGRESS",
       "changeDate": "2019-07-06T20:00:00.000Z"
     }

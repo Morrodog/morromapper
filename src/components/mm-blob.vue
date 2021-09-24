@@ -54,7 +54,7 @@
       // by using an 8-digit CSS hex color for the `color` prop.
       leafletStorage.push(L.polygon([], {
         "fillOpacity": 1.00,
-        "opacity": 1.00
+        "opacity": 1.00,
       }));
       return {
         leafletStorageKey
@@ -169,7 +169,8 @@
         immediate: true,
         handler(newVal) {
           leafletStorage[this.leafletStorageKey].setStyle({
-            color: newVal
+            fillColor: newVal,
+            color: newVal.slice(0, 7)// Remove opacity for border
           });
         }
       },

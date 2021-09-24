@@ -1,1 +1,4 @@
-{"id":"013bef1b-c4b9-4fca-8747-80af8c8113b8","type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/thirr-valley-3-cave-1","cells":[{"x":37,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Designated Shame Room","updates":[{"claimId":"013bef1b-c4b9-4fca-8747-80af8c8113b8","newClaimStatus":"NOT_STARTED","changeDate":"2019-07-08T01:00:00.000Z"}]}
+{
+  "id":"013bef1b-c4b9-4fca-8747-80af8c8113b8",
+  "docCreatedDate": "2019-07-08T01:00:00.000Z",
+  "type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/thirr-valley-3-cave-1","cells":[{"x":37,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Designated Shame Room","updates":[{"newClaimStatus":"NOT_STARTED","changeDate":"2019-07-08T01:00:00.000Z"}]}

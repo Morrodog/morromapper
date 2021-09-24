@@ -1,1 +1,4 @@
-{"id":"0d31e978-b1ba-4134-9884-708213bd4c55","type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/thirr-valley-3-house-1","cells":[{"x":37,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Store room","updates":[{"claimId":"0d31e978-b1ba-4134-9884-708213bd4c55","newClaimStatus":"NOT_STARTED","changeDate":"2019-07-03T01:00:00.000Z"},{"claimId":"0d31e978-b1ba-4134-9884-708213bd4c55","newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-04T01:00:00.000Z"}]}
+{
+  "id":"0d31e978-b1ba-4134-9884-708213bd4c55",
+  "docCreatedDate": "2019-07-03T01:00:00.000Z",
+  "type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/thirr-valley-3-house-1","cells":[{"x":37,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Store room","updates":[{"newClaimStatus":"NOT_STARTED","changeDate":"2019-07-03T01:00:00.000Z"},{"newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-04T01:00:00.000Z"}]}

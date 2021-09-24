@@ -1,1 +1,4 @@
-{"id":"9cdd286b-7107-4640-ae12-895645960b51","type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/thirr-valley-4-velothi-tower","cells":[{"x":37,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Gym","updates":[{"claimId":"9cdd286b-7107-4640-ae12-895645960b51","newClaimStatus":"NOT_STARTED","changeDate":"2019-07-04T01:00:00.000Z"},{"claimId":"9cdd286b-7107-4640-ae12-895645960b51","newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-05T01:00:00.000Z"},{"claimId":"9cdd286b-7107-4640-ae12-895645960b51","newClaimStatus":"DONE","changeDate":"2019-07-06T01:00:00.000Z"}]}
+{
+  "id":"9cdd286b-7107-4640-ae12-895645960b51",
+  "docCreatedDate": "2019-07-04T01:00:00.000Z",
+  "type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/thirr-valley-4-velothi-tower","cells":[{"x":37,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Gym","updates":[{"newClaimStatus":"NOT_STARTED","changeDate":"2019-07-04T01:00:00.000Z"},{"newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-05T01:00:00.000Z"},{"newClaimStatus":"DONE","changeDate":"2019-07-06T01:00:00.000Z"}]}

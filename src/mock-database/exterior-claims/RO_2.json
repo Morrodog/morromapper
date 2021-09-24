@@ -1,23 +1,21 @@
 {
   "id": "aasdfalkklklklklkl",
   "type": "CLAIM",
+  "docCreatedDate": "2019-07-02T00:00:00.000Z",
   "url": "https://www.tamriel-rebuilt.org/claims/shipal-shin-01-narsis",
   "cells": [{"x":41,"y":-40},{"x":42,"y":-40},{"x":42,"y":-39},{"x":42,"y":-38},{"x":43,"y":-38},{"x":44,"y":-38},{"x":45,"y":-38},{"x":46,"y":-38},{"x":46,"y":-39},{"x":46,"y":-40},{"x":46,"y":-41},{"x":45,"y":-41},{"x":44,"y":-41},{"x":43,"y":-41},{"x":43,"y":-40},{"x":43,"y":-39},{"x":44,"y":-39},{"x":44,"y":-40},{"x":45,"y":-40},{"x":45,"y":-39}],
   "claimType": "EXTERIOR",
   "name": "Random Ocean 2 (RO_2)",
   "updates": [
     {
-      "claimId": "aasdfalkklklklklkl",
       "newClaimStatus": "NOT_STARTED",
       "changeDate": "2019-07-02T00:00:00.000Z"
     },
     {
-      "claimId": "aasdfalkklklklklkl",
       "newClaimStatus": "IN_PROGRESS",
       "changeDate": "2019-07-03T00:00:00.000Z"
     },
     {
-      "claimId": "aasdfalkklklklklkl",
       "newClaimStatus": "DONE",
       "changeDate": "2019-07-04T00:00:00.000Z"
     }

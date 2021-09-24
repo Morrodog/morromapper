@@ -8,10 +8,6 @@
  */
 interface ClaimUpdate {
   /**
-   * A UUID matching the ID of a claim.
-   */
-  claimID: string; 
-  /**
    * Describes the claim status AFTER the change has been applied.
    */
   newClaimStatus: ClaimStatus;

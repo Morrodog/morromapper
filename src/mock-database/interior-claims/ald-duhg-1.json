@@ -1,1 +1,4 @@
-{"id":"542ce93e-14ab-47b8-9640-ccfa9835fcd9","type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/ito-firewatch-dustmoth-legion-garrison","cells":[{"x":39,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Spandrel Jannor","updates":[{"claimId":"542ce93e-14ab-47b8-9640-ccfa9835fcd9","newClaimStatus":"NOT_STARTED","changeDate":"2019-07-03T01:00:00.000Z"},{"claimId":"542ce93e-14ab-47b8-9640-ccfa9835fcd9","newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-04T01:00:00.000Z"}]}
+{
+  "id":"542ce93e-14ab-47b8-9640-ccfa9835fcd9",
+  "docCreatedDate": "2019-07-03T01:00:00.000Z",
+  "type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/ito-firewatch-dustmoth-legion-garrison","cells":[{"x":39,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Spandrel Jannor","updates":[{"newClaimStatus":"NOT_STARTED","changeDate":"2019-07-03T01:00:00.000Z"},{"newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-04T01:00:00.000Z"}]}

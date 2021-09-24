@@ -4,15 +4,13 @@ import CellStatus from '/src/types/cell-status.ts'
  * See `'/src/types/cell-status.ts'`
  */
 export default {
-  [CellStatus.RELEASED]:             "#0000ff80", // Blue
-  [CellStatus.VANILLA]:              "#55555580", // Dark Gray
-  [CellStatus.BLANK]:                "#ffffff00", // White, but this color should never appear
-  [CellStatus.PLANNING]:             "#ff000080", // Red
-  [CellStatus.EXTERIOR]:             "#ff993380", // Orange
-  [CellStatus.INTERIORS]:            "#fdbb7780", // Macaroni
-  [CellStatus.QUESTS]:               "#ffff0080", // Yellow
-  [CellStatus.COMPLETED]:            "#00ff0080", // Green
-  [CellStatus.UNDER_REVISION]:       "#ff00ff80", // Purple
-  [CellStatus.TENTATIVELY_COMPLETE]: "#66ff0080", // Not quite green
+  [CellStatus.BLANK]:              "#ffffff00", // Transparent
+  [CellStatus.RELEASED]:           "#0000dd80", // Blue
+  [CellStatus.VANILLA]:            "#33333380", // Dark Gray
+  [CellStatus.UNDER_REVISION]:     "#dd00dd80", // Purple
+  [CellStatus.HAS_NO_EXTERIOR]:    "#dd000080", // Red
+  [CellStatus.EXTERIOR_FINISHED]:  "#dd771180", // Orange
+  [CellStatus.INTERIORS_FINISHED]: "#dddd0080", // Yellow
+  [CellStatus.HAS_QUESTS]:         "#00dd0080", // Green
 }
 

@@ -1,0 +1,12 @@
+{
+  "id":"1c3a886ba-846e-4ae5f-b011-ff0fc9db1d95aa",
+  "docCreatedDate": "2019-07-02T01:00:00.000Z",
+  "type":"CLAIM",
+  "url":"https://www.tamriel-rebuilt.org/claims/andothren-fg-questline",
+  "cells":[{"x":40, "y":-38}],
+    "claimType":"QUEST",
+    "name":"The Missing Pot",
+    "updates":[
+      {"newClaimStatus":"NOT_STARTED","changeDate":"2019-07-02T01:00:00.000Z"}
+    ]
+}

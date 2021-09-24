@@ -11,9 +11,10 @@
      Right now, it expects to be used with v-model, and will get stuck
      closed if the user hits the "x" button in the corner
 
-  An implementation note:
+  Implementation notes:
   1. The component has an invisible dependency on Fontawesome. See https://github.com/NBTSolutions/Leaflet.Dialog/issues/26
      Fontawesome is included for the whole project in `/src/main.ts`.
+  2. The dialog opens itself when it's attached. To prevent this from happening, we only attach it on the first opening.
 -->
 <script lang="ts">
   import 'leaflet-dialog'
@@ -42,6 +43,11 @@
         };
       })()
     },
+    data() {
+      return {
+        dialogAttached: false
+      };
+    },
     created() {
       this.l().mapInitialization.then(() => {
         /*
@@ -58,19 +64,6 @@
           this.l().map.containsDialog = true;
         }
 
-        this.dialog.addTo(this.l().map);
-        this.dialog.showClose();
-        this.dialog.unfreeze();
-        this.l().map.on('dialog:closed', (dialogClosed) => {
-          if(dialogClosed._leafletId === this.dialog._leafletId && this.isOpen) {
-           this.autoIsOpen = false;
-          }
-        });
-        this.l().map.on('dialog:opened', (dialogOpened) => {
-          if(dialogOpened._leafletId === this.dialog._leafletId && !this.isOpen) {
-           this.autoIsOpen = true;
-          }
-        });
       });
     },
     props: {
@@ -108,7 +101,12 @@
         handler(newVal) {
           this.l().mapInitialization.then(() => {
             if(newVal) {
-              this.dialog.open();
+              if(this.dialogAttached) {
+                this.dialog.open();
+              } else {
+                // The dialog opens itself once attached.
+                this.attachDialog();
+              }
             } else {
               this.dialog.close();
             }
@@ -118,9 +116,11 @@
     },
     render() {
       this.l().mapInitialization.then(() => {
-        var dialogDiv = document.getElementById(this.dialogDivId);
-        dialogDiv.innerHTML = "";
-        dialogDiv.appendChild(renderVNodes(this.$slots.default()));
+        if(this.dialogAttached) {
+          var dialogDiv = document.getElementById(this.dialogDivId);
+          dialogDiv.innerHTML = "";
+          dialogDiv.appendChild(renderVNodes(this.$slots.default()));
+        }
       });
       /* To get reactivity in the dialog, we need to return the slot content from the
        * render function even if we don't want the element in the default slot to be 
@@ -133,6 +133,25 @@
         },
         this.$slots.default()
       );
+    },
+    methods: {
+      // Note: dialog-related event listeners registered before the dialog is added do not work.
+      attachDialog() {
+        this.dialog.addTo(this.l().map)
+        this.dialog.showClose();
+        this.dialog.unfreeze();
+        this.l().map.on('dialog:closed', (dialogClosed) => {
+          if(dialogClosed._leafletId === this.dialog._leafletId && this.isOpen) {
+            this.autoIsOpen = false;
+          }
+        });
+        this.l().map.on('dialog:opened', (dialogOpened) => {
+          if(dialogOpened._leafletId === this.dialog._leafletId && !this.isOpen) {
+            this.autoIsOpen = true;
+          }
+        });
+        this.dialogAttached = true;
+      }
     },
     beforeDestroy() {
       this.dialog.destroy();

@@ -1,1 +1,4 @@
-{"id":"8a316af7-58fd-4093-8177-316226d61563","type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/ito-helnim-zafirbel-bay-company-helnim-hall","cells":[{"x":39,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Davis's decoy house","updates":[{"claimId":"8a316af7-58fd-4093-8177-316226d61563","newClaimStatus":"NOT_STARTED","changeDate":"2019-07-03T01:00:00.000Z"},{"claimId":"8a316af7-58fd-4093-8177-316226d61563","newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-04T01:00:00.000Z"},{"claimId":"8a316af7-58fd-4093-8177-316226d61563","newClaimStatus":"DONE","changeDate":"2019-07-06T01:00:00.000Z"}]}
+{
+  "id":"8a316af7-58fd-4093-8177-316226d61563",
+  "docCreatedDate": "2019-07-03T01:00:00.000Z",
+  "type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/ito-helnim-zafirbel-bay-company-helnim-hall","cells":[{"x":39,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Davis's decoy house","updates":[{"newClaimStatus":"NOT_STARTED","changeDate":"2019-07-03T01:00:00.000Z"},{"newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-04T01:00:00.000Z"},{"newClaimStatus":"DONE","changeDate":"2019-07-06T01:00:00.000Z"}]}

@@ -1,1 +1,4 @@
-{"id":"84ec6e1b-e707-486c-bc00-8d228c91c63c","type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/thirr-valley-1-daedric-ruin","cells":[{"x":37,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Boiler room","updates":[{"claimId":"84ec6e1b-e707-486c-bc00-8d228c91c63c","newClaimStatus":"NOT_STARTED","changeDate":"2019-07-02T01:00:00.000Z"},{"claimId":"84ec6e1b-e707-486c-bc00-8d228c91c63c","newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-03T01:00:00.000Z"}]}
+{
+  "id":"84ec6e1b-e707-486c-bc00-8d228c91c63c",
+  "docCreatedDate": "2019-07-02T01:00:00.000Z",
+  "type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/thirr-valley-1-daedric-ruin","cells":[{"x":37,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Boiler room","updates":[{"newClaimStatus":"NOT_STARTED","changeDate":"2019-07-02T01:00:00.000Z"},{"newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-03T01:00:00.000Z"}]}

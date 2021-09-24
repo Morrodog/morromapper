@@ -30,7 +30,6 @@
         gridmapMetadata: gridmapMetadata,
         mapSnapshotPromise: mockDbClient.getSnapshot("2021-06-10T00:00.000Z").then((mapSnapshot) => {
           this.mapSnapshot = mapSnapshot;
-          console.info(JSON.parse(JSON.stringify(mapSnapshot)));
         }),
         mapSnapshot: null
       };

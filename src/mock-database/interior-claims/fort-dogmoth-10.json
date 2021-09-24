@@ -1,1 +1,4 @@
-{"id":"49315d56-b750-4f89-8c27-31683a9d8e13","type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/andothren-tri4-83-hlaalu-club","cells":[{"x":37,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Bathroom","updates":[{"claimId":"49315d56-b750-4f89-8c27-31683a9d8e13","newClaimStatus":"NOT_STARTED","changeDate":"2019-07-07T01:00:00.000Z"}]}
+{
+  "id":"49315d56-b750-4f89-8c27-31683a9d8e13",
+  "docCreatedDate": "2019-07-07T01:00:00.000Z",
+  "type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/andothren-tri4-83-hlaalu-club","cells":[{"x":37,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Bathroom","updates":[{"newClaimStatus":"NOT_STARTED","changeDate":"2019-07-07T01:00:00.000Z"}]}

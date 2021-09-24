@@ -1,1 +1,4 @@
-{"id":"839933ed-f189-450e-a450-099aa5e01bef","type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/ito-firewatch-tem-saber-straits","cells":[{"x":39,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Daniel's house","updates":[{"claimId":"839933ed-f189-450e-a450-099aa5e01bef","newClaimStatus":"NOT_STARTED","changeDate":"2019-07-03T01:00:00.000Z"},{"claimId":"839933ed-f189-450e-a450-099aa5e01bef","newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-04T01:00:00.000Z"}]}
+{
+  "id":"839933ed-f189-450e-a450-099aa5e01bef",
+  "docCreatedDate": "2019-07-03T01:00:00.000Z",
+  "type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/ito-firewatch-tem-saber-straits","cells":[{"x":39,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Daniel's house","updates":[{"newClaimStatus":"NOT_STARTED","changeDate":"2019-07-03T01:00:00.000Z"},{"newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-04T01:00:00.000Z"}]}

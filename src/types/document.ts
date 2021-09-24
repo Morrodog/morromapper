@@ -14,4 +14,8 @@ interface Document {
    * The type of the document.
    */
   type: MapChangeType;
+  /**
+   * ISO 8601 string recording the date and time on which the document was saved.
+   */
+  docCreatedDate: MapChangeType;
 }

@@ -1,1 +1,4 @@
-{"id":"1655a9a6-6a6e-419d-ae31-ea0f732a7006","type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/ito-firewatch-vantus-manor","cells":[{"x":39,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Davis's storage shed","updates":[{"claimId":"1655a9a6-6a6e-419d-ae31-ea0f732a7006","newClaimStatus":"NOT_STARTED","changeDate":"2019-07-08T01:00:00.000Z"}]}
+{
+  "id":"1655a9a6-6a6e-419d-ae31-ea0f732a7006",
+  "docCreatedDate": "2019-07-08T01:00:00.000Z",
+  "type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/ito-firewatch-vantus-manor","cells":[{"x":39,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Davis's storage shed","updates":[{"newClaimStatus":"NOT_STARTED","changeDate":"2019-07-08T01:00:00.000Z"}]}

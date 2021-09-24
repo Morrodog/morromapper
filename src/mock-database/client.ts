@@ -18,6 +18,13 @@ import ro4 from '/src/mock-database/exterior-claims/RO_4.json'
 
 const exteriorClaims = [ro1, ro2, ro3, ro4];
 
+import dreughmora from '/src/mock-database/quest-claims/revenge-of-the-dreughmora.json'
+import liberty    from '/src/mock-database/quest-claims/given-death-not-liberty.json'
+import missing    from '/src/mock-database/quest-claims/the-missing-pot.json'
+import davis      from '/src/mock-database/quest-claims/a-long-vacation-for-davis.json'
+
+const questClaims = [dreughmora, liberty, missing, davis];
+
 import interior1 from '/src/mock-database/interior-claims/ald-duhg-0.json'
 import interior2 from '/src/mock-database/interior-claims/ald-duhg-1.json'
 import interior3 from '/src/mock-database/interior-claims/ald-duhg-10.json'
@@ -60,8 +67,8 @@ const interiorClaims = [ interior1, interior2, interior3, interior4, interior5 ,
 
 import generateMapSnapshot from '/src/utils/generate-map-snapshot.ts'
 
-const claimsById = {
-  ...(Object.fromEntries(interiorClaims.concat(exteriorClaims).map((claim) => {
+const documentsById = {
+  ...(Object.fromEntries((interiorClaims.concat(exteriorClaims).concat(questClaims).concat(releases)).map((claim) => {
     return [claim.id, claim];
   }))),
 };
@@ -73,14 +80,15 @@ export default {
         resolve(generateMapSnapshot([
           ...releases,
           ...exteriorClaims,
+          ...questClaims,
           ...interiorClaims
         ], datetime));
       }, 500);
     });
   },
-  getClaims(claimIds) {
-    return Promise.resolve(claimIds.map((id) => {
-      return claimsById[id];
+  getDocuments(documentIds) {
+    return Promise.resolve(documentIds.map((id) => {
+      return documentsById[id];
     }));
   }
 }

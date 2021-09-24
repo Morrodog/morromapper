@@ -1,1 +1,4 @@
-{"id":"e5387fb0-fbb6-4a05-8b03-11bac8b20e37","type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/velothi-mountains-dwemer-ruin-1","cells":[{"x":39,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Lucky Lou's Gambling Hall","updates":[{"claimId":"e5387fb0-fbb6-4a05-8b03-11bac8b20e37","newClaimStatus":"NOT_STARTED","changeDate":"2019-07-08T01:00:00.000Z"}]}
+{
+  "id":"e5387fb0-fbb6-4a05-8b03-11bac8b20e37",
+  "docCreatedDate": "2019-07-08T01:00:00.000Z",
+  "type":"CLAIM","url":"https://www.tamriel-rebuilt.org/claims/velothi-mountains-dwemer-ruin-1","cells":[{"x":39,"y":-42}],"claimType":"INTERIOR","name":"Fort Dogmoth, Lucky Lou's Gambling Hall","updates":[{"newClaimStatus":"NOT_STARTED","changeDate":"2019-07-08T01:00:00.000Z"}]}
