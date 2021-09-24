@@ -52,6 +52,7 @@ export default function generateMapSnapshot(documents: Document[], snapshotTime:
   // Step 1
   var cellsToDocuments = {};
   var exteriorClaims = [];
+  var releases = [];
   var releaseCells = []; 
   documents.forEach((doc) => {
     var cells;
@@ -126,9 +127,9 @@ export default function generateMapSnapshot(documents: Document[], snapshotTime:
           if(claimStatus(doc) === ClaimStatus.CLOSED) break; // Closed claims are ignored for cell coloring purposes.
           if(doc.claimType === ClaimType.EXTERIOR) {
             cellDocumentsByType.exteriorClaims.push(doc);
-          } else if(doc.claimType === claimType.INTERIOR) {
+          } else if(doc.claimType === ClaimType.INTERIOR) {
             cellDocumentsByType.interiorClaims.push(doc);
-          } else if(doc.claimType === claimType.QUEST) {
+          } else if(doc.claimType === ClaimType.QUEST) {
             cellDocumentsByType.questClaims.push(doc);
           }
           break;
@@ -156,17 +157,21 @@ export default function generateMapSnapshot(documents: Document[], snapshotTime:
     }
 
     // Release blobs logic
-    var latestReleaseContainingCell = finishedReleases.reduce((release, otherRelease) => {
-      if(release.releaseDate > otherRelease.releaseDate) {
-        return release;
-      } else {
-        return otherRelease;
+    if(finishedReleases.length > 0) {
+      var latestReleaseContainingCell = (finishedReleases.concat(unfinishedReleases)).reduce((release, otherRelease) => {
+        if(release.releaseDate > otherRelease.releaseDate) {
+          return release;
+        } else {
+          return otherRelease;
+        }
+      }).id;
+      if(containedByRelease) {
+        releaseBlobs[latestReleaseContainingCell].cells.push(cell);
+        inBorderBlob = true;
       }
-    });
-    if(containedByRelease) {
-      releaseBlobs[latestReleaseContainingCell].cells.push(cell);
-      inBorderBlob = true;
     }
+
+    // Storing the status of un-borderblobbed cells for step 3.
     if(!inBorderBlob) {
       cellStatuses[cell] = statusForCell(finishedReleases, unfinishedReleases, futureReleases, exteriorClaims, questClaims, interiorClaims);
     }
@@ -178,9 +183,9 @@ export default function generateMapSnapshot(documents: Document[], snapshotTime:
     };
   }).concat(Object.values(releaseBlobs).map((releaseBlob) => {
     return {
-      cells: releaseBlob.cells.map(CellXY.fromObjectKey);
+      cells: releaseBlob.cells.map(CellXY.fromObjectKey),
       cellStatus: (() => {
-        if(!release.released) return CellStatus.UNDER_REVISION;
+        if(!releaseBlob.released) return CellStatus.UNDER_REVISION;
         if(releaseBlob.creator === "BETHESDA") return CellStatus.VANILLA;
         return CellStatus.RELEASED;
       })()
@@ -189,11 +194,11 @@ export default function generateMapSnapshot(documents: Document[], snapshotTime:
 
   // Step 3
   Object.entries(cellStatuses).forEach((statusBlobEntry) => {
-    mapSnapshot.statusBlobs[statusBlobEntry[1]].push(statusBlobEntry[0]);
+    mapSnapshot.statusBlobs[statusBlobEntry[1]].push(CellXY.fromObjectKey(statusBlobEntry[0]));
   });
 
   // Step 4
-  mapSnapshot.cellDocuments = Object.fromEntries(Object.toEntries(cellsToDocuments).map((entry) => {
+  mapSnapshot.cellDocuments = Object.fromEntries(Object.entries(cellsToDocuments).map((entry) => {
     return [entry[0], entry[1].id];
   }));
 
@@ -239,7 +244,7 @@ function statusForCell(finishedReleases, unfinishedReleases, futureReleases, ext
 }
 
 function claimStatus(claim) {
-  return claim.updates(-1)[0].newClaimStatus;
+  return claim.updates.slice(-1)[0].newClaimStatus;
 }
 
 function claimFinished(claim) {

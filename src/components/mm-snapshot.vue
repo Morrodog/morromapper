@@ -1,9 +1,7 @@
 <template>
   <div>
-    <!-- TODO: Deduplicate release and bethesdaRelease code here -->
-    <mm-blob v-for="release in bethesdaReleases" :color="vanillaColor" :cells="release.releasedCells" :has-border="containsHoverCell(release.releasedCells, hoverCell)" />
-    <mm-blob v-for="release in releases"         :color="releaseColor" :cells="release.releasedCells" :has-border="containsHoverCell(release.releasedCells, hoverCell)" />
-    <mm-blob v-for="inProgressBlob in inProgressBlobs" :color="inProgressBlob.color" :cells="inProgressBlob.cells" />
+    <mm-blob v-for="borderBlob in borderBlobs" :color="colorForStatus(borderBlob.cellStatus)" :cells="borderBlob.cells" :has-border="containsHoverCell(borderBlob.cells, hoverCell)" />
+    <!--<mm-blob v-for="statusBlob in statusBlobs" :color="inProgressBlob.color" :cells="inProgressBlob.cells" />-->
   </div>
 </template>
 <script>
@@ -54,6 +52,14 @@
         return cells.some((cell) => {
           return cell.x === hoverCell.x && cell.y === hoverCell.y;
         });
+      },
+      colorForStatus(status) {
+        return CELL_STATUS_COLORS[status];
+      }
+    },
+    computed: {
+      borderBlobs() {
+        return this.mapSnapshot.borderBlobs;
       }
     }
   });
