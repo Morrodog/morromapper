@@ -4,15 +4,19 @@ import oldEbonheart        from '/src/mock-database/releases/old-ebonheart.json'
 import sacredEast          from '/src/mock-database/releases/sacred-east.json'
 import aanthirrin          from '/src/mock-database/releases/aanthirin.json'
 import telvannis           from '/src/mock-database/releases/telvannis.json'
+import vvardenfell         from '/src/mock-database/releases/vanilla.json'
+import solstheim           from '/src/mock-database/releases/bloodmoon.json'
+import firemoth            from '/src/mock-database/releases/firemoth.json'
 
-import vvardenfell         from '/src/mock-database/bethesda-releases/vanilla.json'
-import solstheim           from '/src/mock-database/bethesda-releases/bloodmoon.json'
-import firemoth            from '/src/mock-database/bethesda-releases/firemoth.json'
+const releases = [antediluvianSecrets, sacredEastUpdate, oldEbonheart, sacredEast, aanthirrin, telvannis, vvardenfell, solstheim, firemoth];
+
 
 import ro1 from '/src/mock-database/exterior-claims/RO_1.json'
 import ro2 from '/src/mock-database/exterior-claims/RO_2.json'
 import ro3 from '/src/mock-database/exterior-claims/RO_3.json'
 import ro4 from '/src/mock-database/exterior-claims/RO_4.json'
+
+const exteriorClaims = [ro1, ro2, ro3, ro4];
 
 import interior1 from '/src/mock-database/interior-claims/ald-duhg-0.json'
 import interior2 from '/src/mock-database/interior-claims/ald-duhg-1.json'
@@ -52,31 +56,31 @@ import interior35 from '/src/mock-database/interior-claims/shashlyk-3.json'
 import interior36 from '/src/mock-database/interior-claims/shipwreck-1.json'
 import interior37 from '/src/mock-database/interior-claims/shipwreck-2.json'
 
-var interiors = [ interior1, interior2, interior3, interior4, interior5 , interior6 , interior7 , interior8 , interior9 , interior10, interior11, interior12, interior13, interior14, interior15, interior16, interior17, interior18, interior19, interior20, interior21, interior22, interior23, interior24, interior25, interior26, interior27, interior28, interior29, interior30, interior31, interior32, interior33, interior34, interior35, interior36, interior37];
+const interiorClaims = [ interior1, interior2, interior3, interior4, interior5 , interior6 , interior7 , interior8 , interior9 , interior10, interior11, interior12, interior13, interior14, interior15, interior16, interior17, interior18, interior19, interior20, interior21, interior22, interior23, interior24, interior25, interior26, interior27, interior28, interior29, interior30, interior31, interior32, interior33, interior34, interior35, interior36, interior37];
 
 import generateMapSnapshot from '/src/utils/generate-map-snapshot.ts'
+
+const claimsById = {
+  ...(Object.fromEntries(interiorClaims.concat(exteriorClaims).map((claim) => {
+    return [claim.id, claim];
+  }))),
+};
 
 export default {
   getSnapshot(datetime) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve(generateMapSnapshot([
-          vvardenfell,
-          firemoth,
-          solstheim,
-          telvannis,
-          antediluvianSecrets,
-          sacredEast,
-          sacredEastUpdate,
-          aanthirrin,
-          oldEbonheart,
-          ro1,
-          ro2,
-          ro3,
-          ro4,
-          ...interiors
+          ...releases,
+          ...exteriorClaims,
+          ...interiorClaims
         ], datetime));
       }, 500);
     });
+  },
+  getClaims(claimIds) {
+    return Promise.resolve(claimIds.map((id) => {
+      return claimsById[id];
+    }));
   }
 }

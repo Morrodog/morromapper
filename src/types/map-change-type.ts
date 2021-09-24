@@ -29,17 +29,6 @@ enum MapChangeType {
    * `Release`s contain a list of cells, and all of these cells are changed to be `BLANK`.
    */
   REDO = "REDO",
-  /**
-   * Documents of this type represent releases by Bethesda.
-   *
-   * This changes the `CellStatus` of the listed cells to `VANILLA`.
-   *
-   * A few examples:
-   * 1. Vvardenfell   (the release of TESIII)
-   * 2. Solstheim     (the release of Bloodmoon)
-   * 3. Fort Firemoth (the release of official mod)
-   */
-  BETHESDA_RELEASE = "BETHESDA_RELEASE",
 }
 
 export default MapChangeType

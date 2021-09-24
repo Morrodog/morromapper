@@ -3,7 +3,7 @@
 </template>
 <script lang="ts">
   import { defineComponent } from 'vue'
-  import home from './pages/home.vue'
+  import home from './pages/progress-map.vue'
 
   export default defineComponent({
     name: 'App',

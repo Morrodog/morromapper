@@ -20,6 +20,7 @@ import CellXY      from '/src/types/cell-x-y.ts'
  * that progress cells are moving "backwards" every time a new claim is added.
  */
 interface Claim {
+  type: "CLAIM";
   /**
    * The ID is intended to be a UUID used as a database key.
    *

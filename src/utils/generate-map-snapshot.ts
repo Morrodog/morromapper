@@ -11,129 +11,241 @@ import Document      from '/src/types/document.ts'
  * MapSnapshot for the given datetime.
  *
  *  `documents` should only include documents such that `date` is less than or equal to `snapshotTime`,
- *  and should only include documents of these three types:
+ *  and should only include documents of these two types:
  *  1. MapChangeType.RELEASE
- *  2. MapChangeType.BETHESDA_RELEASE
- *  3. MapChangeType.CLAIM
+ *  2. MapChangeType.CLAIM
  */
 export default function generateMapSnapshot(documents: Document[], snapshotTime: string): MapSnapshot {
-  /* We must make three "pass"es over the data. The reason we can't do this in one pass is that computing
-   * the `CellStatus` of a given cell cannot be done one claim at a time, so we need to collect all of the claim objects for each cell.
-   * 
-   * For example, for a cell to transition from `INTERIORS` to `QUESTS`, ALL of the claims of type `ClaimType.INTERIOR` must have
-   * status `ClaimStatus.DONE`. With only one claim at a time, it's impossible to know whether all of the other interior claims
-   * for that cell are also finished. And until all of the `documents` have been iterated over, there's no way to know that
-   * any of the claims are the last claim to be discovered on a given cell, so anything to be done with the claims must be done after
-   * this first pass has discovered all of the claims for each cell.
+  /*
+   * The snapshot is generated in four steps:
+   * 1. A mapping is made from cells to the documents that contain them.
+   *    Exterior claims and releases are also identified in this step to avoid
+   *    iterating over all of the documents twice.
+   * 2. The exteriors and releases from earlier are used to compute the `borderBlobs`.
+   * 3. The remaining cells are put in `statusBlobs` according to their `CellStatus`es.
+   * 4. The mapping from cells to documents is turned into a mapping from cells to document IDs,
+   * and that becomes `cellDocuments`.
    *
-   * The reason that we make a third pass is that the claim objects used to compute the `CellStatus`es need to be turned into `ID`s.
+   * TODO? change cellsToDocuments to a Map of `CellXY` to array of `Document`s
+   * TODO Figure out how to treat releases (especially the claims within them) when the snapshotTime predates their startDate.
+   *      Cells that are TENTATIVELY_COMPLETE should be COMPLETE if their is a released release whose start date is after the current snapshot.
    */
-  // "First pass"
-  var mapSnapshot = documents.reduce((snapshot, doc) => { // "document" is a global variable, so we shorten to "doc" here.
+  var mapSnapshot = {
+    borderBlobs: [],  // Replaced in step 2
+
+    // Populated in step 3
+    statusBlobs: {
+      [CellStatus.RELEASED]:             [],
+      [CellStatus.VANILLA]:              [],
+      [CellStatus.BLANK]:                [],
+      [CellStatus.PLANNING]:             [],
+      [CellStatus.EXTERIOR]:             [],
+      [CellStatus.INTERIORS]:            [],
+      [CellStatus.QUESTS]:               [],
+      [CellStatus.COMPLETED]:            [],
+      [CellStatus.UNDER_REVISION]:       [],
+      [CellStatus.TENTATIVELY_COMPLETE]: [],
+    },
+    cellDocuments: [] // Replaced in step 4
+  };
+
+  // Step 1
+  var cellsToDocuments = {};
+  var exteriorClaims = [];
+  var releaseCells = []; 
+  documents.forEach((doc) => {
+    var cells;
     switch(doc.type) {
-        case MapChangeType.RELEASE:
-        snapshot.releases.push(doc);
+        case "CLAIM":
+        cells = doc.cells;
+        if(doc.claimType === ClaimType.EXTERIOR) exteriorClaims.push(doc);
         break;
-        case MapChangeType.BETHESDA_RELEASE:
-        snapshot.bethesdaReleases.push(doc);
-        break;
-        case MapChangeType.CLAIM:
-        doc.cells.forEach((cell) => {
-          var cellKey = CellXY.toObjectKey(new CellXY(cell));
-          if(!snapshot.cellClaims[cellKey]) {
-            snapshot.cellClaims[cellKey] = [];
-          }
-          snapshot.cellClaims[cellKey].push(doc);
-        });
+        case "RELEASE":
+        cells = doc.releasedCells
+        releases.push(doc);
         break;
         default:
-        /* The caller of this function is expected to filter out map snapshots.
-         * This responsibility is given to the caller so that map snapshots can be filtered
-         * out at the database level instead of doing so here in JS.
-         */
-        throw new Error(`generateClaimSnapshot invalidly given document of type \`${doc.type}\``);
+        throw new Error(`Document of invalid type ${doc.type} given to generateMapSnapshot`);
     }
-    return snapshot;
-  }, {
-    // See `MapSnapshot` for details on these fields.
-    bethesdaReleases: [],
-    releases: [],
-    inProgress: {},
-    cellClaims: {}
-  });
-  // "Second pass"
-  mapSnapshot.inProgress = Object.entries(Object.entries(mapSnapshot.cellClaims).reduce((cellToStatus, [cellKey, claims]) => {
-    cellToStatus[cellKey] = (() => {
-      // If a cell's exterior work has been started, then it progresses to `EXTERIOR` from `PLANNING`.
-      var exteriorClaimStatus = claimStatusFromClaims(claims, ClaimType.EXTERIOR, snapshotTime);
-      if(exteriorClaimStatus === ClaimStatus.NOT_STARTED) return CellStatus.PLANNING;
-      if(exteriorClaimStatus === ClaimStatus.IN_PROGRESS) return CellStatus.EXTERIOR;
-      // If a cell's interior work has been started, then it progresses to `INTERIORS`.
-      var interiorClaimStatus = claimStatusFromClaims(claims, ClaimType.INTERIOR, snapshotTime);
-      if(interiorClaimStatus === ClaimStatus.NOT_STARTED) return CellStatus.EXTERIOR;
-      if(interiorClaimStatus === ClaimStatus.IN_PROGRESS) return CellStatus.INTERIORS;
-      // If a cell's interior work is complete, or if its quest work has started, then it progresses to `QUESTS`.
-      // If the quest claims are all finished, then it jumps to `COMPLETED`.
-      var questsClaimStatus = claimStatusFromClaims(claims, ClaimType.QUEST, snapshotTime);
-      if(questsClaimStatus === ClaimStatus.NOT_STARTED) return CellStatus.QUESTS;
-      if(questsClaimStatus === ClaimStatus.IN_PROGRESS) return CellStatus.QUESTS;
-      if(questsClaimStatus === ClaimStatus.DONE) return  CellStatus.COMPLETED;
-    })();
-    return cellToStatus;
-  }, {})).reduce((inProgress, [cellKey, cellStatus]) => {
-    inProgress[cellStatus].push(CellXY.fromObjectKey(cellKey));
-    return inProgress;
-  }, {
-    [CellStatus.PLANNING]:  [],
-    [CellStatus.EXTERIOR]:  [],
-    [CellStatus.INTERIORS]: [],
-    [CellStatus.QUESTS]:    [],
-    [CellStatus.COMPLETED]: []
-  });
-  // "Third pass"
-  mapSnapshot.cellClaims = Object.entries(mapSnapshot.cellClaims).reduce((cellClaims, [cellKey, claimDocs]) => {
-    cellClaims[cellKey] = claimDocs.map((claimDoc) => {
-      return claimDoc.id;
+    cells.map(CellXY.toObjectKey).forEach((cellKey) => {
+      if(!cellsToDocuments.hasOwnProperty(cellKey)) {
+        cellsToDocuments[cellKey] = [];
+      }
+      cellsToDocuments[cellKey].push(doc);
     });
-    return cellClaims;
+  });
+
+  // Step 2
+  /*
+   * The `borderBlobs` logic is as follows:
+   * Cells that only belong to one finished release go to that release's blob.
+   * Cells that belong to an unfinished release AND a finished release go into the unfinished release's blob.
+   * Cells that belong only to an unfinished release are not blobbed according to release logic.
+   *
+   * Exterior claims recieve their own border blobs if:
+   * 1. Their cells contain no claims of further types (interior or quest)
+   * 2. They don't overlap with other exterior claims
+   * 3. They are not in any finished releases
+   *
+   * Cells outside of any blobs are added to the `cellStatuses` object for usage in step 3.
+   */
+  var unblobbedCells = Object.keys(cellsToDocuments);
+  var releaseBlobs = releases.reduce((releaseBlobs, release) => {
+    releaseBlobs[release.id] = {
+      // The "BETHESDA" creator recieves special treatment, so we need to keep track of this.
+      creator: release.creator,
+      // Released and unreleased releases are colored differently
+      released: !!release.releaseDate,
+      cells: []
+    };
+    return releaseBlobs;
   }, {});
+  // We eliminate exterior blobs as we go. This enables us to keep things on one iteration.
+  var exteriorBlobs = exteriorClaims.reduce((exteriorBlobs, exteriorClaim) => {
+    exteriorBlobs[exteriorClaim.id] = exteriorClaim.cells.map(CellXY.toObjectKey);
+    return exteriorBlobs;
+  }, {});
+  // Maps from cellKey to CellStatus. Used later for `statusBlobs`.
+  var cellStatuses = {};
+
+  unblobbedCells.forEach((cell) => {
+    var { finishedReleases, futureReleases, unfinishedReleases, exteriorClaims, interiorClaims, questClaims } = cellsToDocuments[cell].reduce((cellDocumentsByType, doc) => {
+      switch(doc.type) {
+          case "RELEASE":
+          if(!!doc.releaseDate) {
+            if(doc.startDate > snapshotTime) {
+              cellDocumentsByType.futureReleases.push(doc);
+            } else {
+              cellDocumentsByType.finishedReleases.push(doc);
+            }
+          } else {
+            cellDocumentsByType.unfinishedReleases.push(doc);
+          }
+          break;
+          case "CLAIM":
+          if(claimStatus(doc) === ClaimStatus.CLOSED) break; // Closed claims are ignored for cell coloring purposes.
+          if(doc.claimType === ClaimType.EXTERIOR) {
+            cellDocumentsByType.exteriorClaims.push(doc);
+          } else if(doc.claimType === claimType.INTERIOR) {
+            cellDocumentsByType.interiorClaims.push(doc);
+          } else if(doc.claimType === claimType.QUEST) {
+            cellDocumentsByType.questClaims.push(doc);
+          }
+          break;
+      }
+      return cellDocumentsByType;
+    }, {
+      finishedReleases: [],
+      unfinishedReleases: [],
+      futureReleases: [],
+      exteriorClaims: [],
+      interiorClaims: [],
+      questClaims: []
+    });
+    var containedByRelease = (finishedReleases.length > 0)
+    var inBorderBlob = false;
+
+    // Exterior blobs logic
+    var breaksExteriorBlobs = [containedByRelease, ((interiorClaims.length + questClaims.length) > 0), (exteriorClaims.length > 1)].some((a) => a);
+    if(breaksExteriorBlobs) {
+      exteriorClaims.forEach((brokenExteriorClaim) => {
+        delete exteriorBlobs[brokenExteriorClaim.id];
+      });
+    } else {
+      inBorderBlob = true;
+    }
+
+    // Release blobs logic
+    var latestReleaseContainingCell = finishedReleases.reduce((release, otherRelease) => {
+      if(release.releaseDate > otherRelease.releaseDate) {
+        return release;
+      } else {
+        return otherRelease;
+      }
+    });
+    if(containedByRelease) {
+      releaseBlobs[latestReleaseContainingCell].cells.push(cell);
+      inBorderBlob = true;
+    }
+    if(!inBorderBlob) {
+      cellStatuses[cell] = statusForCell(finishedReleases, unfinishedReleases, futureReleases, exteriorClaims, questClaims, interiorClaims);
+    }
+  });
+  mapSnapshot.borderBlobs = Object.values(exteriorBlobs).map((cellKeys) => {
+    return {
+      cells: cellKeys.map(CellXY.fromObjectKey),
+      cellStatus: CellStatus.EXTERIOR
+    };
+  }).concat(Object.values(releaseBlobs).map((releaseBlob) => {
+    return {
+      cells: releaseBlob.cells.map(CellXY.fromObjectKey);
+      cellStatus: (() => {
+        if(!release.released) return CellStatus.UNDER_REVISION;
+        if(releaseBlob.creator === "BETHESDA") return CellStatus.VANILLA;
+        return CellStatus.RELEASED;
+      })()
+    }
+  }));
+
+  // Step 3
+  Object.entries(cellStatuses).forEach((statusBlobEntry) => {
+    mapSnapshot.statusBlobs[statusBlobEntry[1]].push(statusBlobEntry[0]);
+  });
+
+  // Step 4
+  mapSnapshot.cellDocuments = Object.fromEntries(Object.toEntries(cellsToDocuments).map((entry) => {
+    return [entry[0], entry[1].id];
+  }));
+
   return mapSnapshot;
 }
 
-/**
- * Determines the status of a particular phase of development of a cell. This is represented with a `ClaimStatus`.
- *
- * (The "phases" of development are represented by the `ClaimType` values.)
- *
- * The status of the given phase of development is decided by the following rules:
- * 1. If all of the claims are `CLOSED`, or if there are no claims, then development is `NOT_STARTED`.
- * 2. If all claims are `DONE`, then this phase of cell development is `DONE`.
- * 3. Otherwise, any claims are either `IN_PROGRESS` or `DONE`, then the cell is `IN_PROGRESS`
- * 4. Finally, if all claims are `NOT_STARTED`, then this phase of cell development is `NOT_STARTED`.
- */
-const claimStatusFromClaims = function claimStatusFromClaims (claims, claimType, snapshotTime) {
-  var claimStatuses =  claims.filter((claim) => { // First, we isolate the claims of the relevant type.
-    return claim.claimType === claimType;
-  }).map((exteriorClaim) => { // Next, we get the status of each claim at the given `snapshotTime`
-    var relevantUpdates = exteriorClaim.updates.filter((update) => {
-      return update.changeDate <= snapshotTime;
-    });
-    if(relevantUpdates.length === 0) {
-      return ClaimStatus.NOT_STARTED;
-    } else {
-      return relevantUpdates.slice(-1)[0].newClaimStatus;
-    }
-  }).filter((claimStatus) => { // Next, we filter out any `CLOSED` claims.
-    return claimStatus !== ClaimStatus.CLOSED;
-  });
-  var allDone = claimStatuses.every((claimStatus) => {
-    return claimStatus === ClaimStatus.DONE;
-  });
-  var someStarted = claimStatuses.some((claimStatus) => {
-    return [ClaimStatus.DONE, ClaimStatus.IN_PROGRESS].includes(claimStatus);
-  });
-  /* Rule 1 */if(claimStatuses.length === 0) return ClaimStatus.NOT_STARTED;
-  /* Rule 2 */if(allDone) return ClaimStatus.DONE;
-  /* Rule 3 */if(someStarted) return ClaimStatus.IN_PROGRESS;
-  /* Rule 4 */return ClaimStatus.NOT_STARTED;
-};
+function statusForCell(finishedReleases, unfinishedReleases, futureReleases, exteriorClaims, questClaims, interiorClaims) {
+  // If the cell is in a finished release, then its color will
+  // be decided by the color of the release blob, not the individual cell's color
+  if(finishedReleases.length > 0) return CellStatus.BLANK;
+
+  var hasExteriorClaims = exteriorClaims.length > 0;
+  var hasInteriorClaims = interiorClaims.length > 0;
+  var hasQuestClaims    = questClaims.length > 0;
+
+  var exteriorStarted = exteriorClaims.every((exteriorClaim) => {
+    return claimStatus(exteriorClaim) === ClaimStatus.NOT_STARTED;
+  }) && exteriorClaims.length > 0;
+
+  var exteriorFinished  = exteriorClaims.every(claimFinished) && exteriorClaims.length > 0;
+  var interiorsFinished = interiorClaims.every(claimFinished) && interiorClaims.length > 0;
+  var questsFinished    = questClaims.every(claimFinished) && questClaims.length > 0;
+
+  // If the cell is in a release that has already happened, then its list of claims can be considered complete.
+  // If the list of claims cannot be considered complete, then we just guess that if the claims list
+  // includes quests, then it's complete. It's not great, but I think it's the best heuristic so that some of the
+  // map gets `COMPLETE` before a release.
+  var allClaimsAreKnown = (futureReleases.length > 1) || hasQuestClaims;
+
+  if(allClaimsAreKnown) {
+    if(!exteriorStarted) return CellStatus.PLANNING;
+    if(!exteriorFinished) return CellStatus.EXTERIOR;
+    if(!interiorsFinished) return CellStatus.INTERIORS;
+    if(!questsFinished) return CellStatus.QUESTS;
+    return CellStatus.COMPLETE;
+  } else {
+    if(!exteriorStarted) return CellStatus.PLANNING;
+    if(!exteriorFinished) return CellStatus.EXTERIOR;
+    if(exteriorFinished && !hasInteriorClaims) return CellStatus.TENTATIVELY_COMPLETE;
+    if(hasInteriorClaims && !interiorsFinished) return CellStatus.INTERIORS;
+    return CellStatus.TENTATIVELY_COMPLETE;
+  }
+}
+
+function claimStatus(claim) {
+  return claim.updates(-1)[0].newClaimStatus;
+}
+
+function claimFinished(claim) {
+  return claimStatus(claim) === ClaimStatus.DONE;
+}
+
+function releaseIsFinished(release, date) {
+  return (!!release.releaseDate && release.releaseDate > date);
+}

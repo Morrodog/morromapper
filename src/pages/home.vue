@@ -2,6 +2,7 @@
   <div>
     <mm-map :backgroundmap-metadata="gridmapMetadata">
       <mm-snapshot v-if="!!mapSnapshot" :map-snapshot="mapSnapshot" :backgroundmapMetadata="gridmapMetadata" />
+      <mm-dialog v-model:dialogOpen="">
     </mm-map>
   </div>
 </template>
@@ -21,13 +22,11 @@
 
   export default defineComponent({
     components: {
-      'mm-cellpicker': MMCellpicker,
       'mm-snapshot': MMSnapshot,
       'mm-map': MMMap,
     },
     data() {
       return {
-        selectedCells: [],
         gridmapMetadata: gridmapMetadata,
         mapSnapshotPromise: mockDbClient.getSnapshot("2021-06-10T00:00.000Z").then((mapSnapshot) => {
           this.mapSnapshot = mapSnapshot;

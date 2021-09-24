@@ -57,6 +57,19 @@ enum CellStatus {
    * A cell in `PLANNING` is not yet ready for exterior work to begin.
    */
   PLANNING = "PLANNING",
+  /**
+   * A cell that is `UNDER_REVISION` was in a previous finished release, and is currently in a more recent unfinished release.
+   */
+  UNDER_REVISION = "UNDER_REVISION",
+  /**
+   * A cell that is `TENTATIVELY_COMPLETE` has all of its exterior and/or interior claims finished, but the remaining claim categories
+   * have no claims, so it's unclear whether the claims haven't been made yet, or whether there are no claims to make beyond those that
+   * are already complete.
+   *
+   * If all of the claims that went into a release are complete, then even if there are no quests and/or interiors, the
+   * cell should be marked `COMPLETE` instead when time traveling back to the time before the release was finished.
+   */
+  TENTATIVELY_COMPLETE = "TENTATIVELY_COMPLETE"
 }
 
 export default CellStatus

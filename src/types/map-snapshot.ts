@@ -1,28 +1,43 @@
-import BethesdaRelease from './types/bethesda-release.ts'
 import Release         from './types/release.ts'
+import MapBlob         from './types/map-blob.ts'
 
 /**
  * Represents the minimal information necessary to display the correct mm-blobs of color on the mm-map.
  *
- * The cells are split into blobs according to two criteria:
+ * `MapSnapshot`s contain the bare minimum information necessary for three functions:
+ * 1. To appropriately group cells together for blob borders (such groups are hereafter called "borderblobs").
+ * 2. To give all of the cells the correct colors
+ * 3. To retrieve further information when the user clicks a cell.
+ *
+ * GROUPING THE CELLS TOGETHER:
+ * The cells are split into borderblobs according to two criteria:
  * 1. Cells of different colors must be in different blobs
  * 2. Groups of cells around which a border should be displayed should be in their own blobs.
  *
- * Borders are only shown on release areas (when they're moused over), so all of the `CellStatus`es
- * except for `VANILLA` or `RELEASED` can be represented with one `mm-blob` each (since `mm-blob`s 
- * can display multipolygons, there need not be large contiguous regions sharing a `CellStatus`.)
+ * Groups of cells require borders under these circumstances:
+ * 1. Releases get their own blobs.
+ * 2. Exterior claims with no interior or quest claims within any of their cells get their own blobs.
+ * (Note that `mm-blob`s need not be contiguous.)
  *
- * It's also important to note that a given `MapSnapshot` need only contain enough to color the map, and
- * to populate tooltips for each cell. Information necessary to display the next `MapSnapshot` or the previous
- * `MapSnapshot` is not included in the `MapSnapshot` itself.
+ * GIVING ALL OF THE CELLS THE CORRECT COLORS
+ * Not all cells are colored individually. This is because the cells are colored by `mm-blob` components,
+ * and the cells in borderblobs (as discussed in the previous section) all need to be in the same blobs.
+ * The cells are _aren't_ in borderblobs can share a single `mm-blob` with all of the other cells of the same
+ * color.
  *
- * Because populating the tooltips is part of the specification for this interface, we must explain their details here:
- * For `Release`s and `BethesdaRelease`s, the tooltip simply displays the name of the release.
- * For other `CellStatus`es, the tooltip simply displays the number of claims.
+ * These two situations are represented in the type as the `borderBlobs` property for blobs that need borders,
+ * and `statusBlobs` for the remaining cells that can all be blobbed by status alone.
+ *
+ * RETRIEVING FURTHER INFORMATION
+ * To retrieve further information for a cell, the user of the `MapSnapshot` needs to know the following:
+ * 1. Which claims (if any) contain the cell
+ * 2. Which releases (if any) contain the cell
+ *
+ * To accomplish this, MapSnapshot contains a list of all of the colored cells on the map, and each is given a list of IDs.
+ * These are IDs may be of claim documents or release documents.
  */
 interface MapSnapshot {
-  bethesdaReleases: BethesdaRelease[]; // Order in the array does not matter.
-  releases: Release[]; // Order in the array does not matter.
-  inProgress: Object; // Each key is a `CELLSTATUS` string, and each value is `CellXY[]`.
-  cellClaims: Object; // Each key is a string created by `CellXY.toObjectKey`, and each value is a list of claim IDs for retrieval on click.
+  borderBlobs: MapBlob[];
+  statusBlobs: Object;  // Each key is a CellStatus, and each value are all of the non-borderblob cells that share that status.
+  cellDocuments: Object;// Each key is a string created by `CellXY.toObjectKey`, and each value is a list of document IDs for retrieval on click.
 }
