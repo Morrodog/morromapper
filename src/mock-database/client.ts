@@ -1,14 +1,15 @@
-import antediluvianSecrets from '/src/mock-database/releases/antediluvian-secrets.json'
-import sacredEastUpdate    from '/src/mock-database/releases/2013-release.json'
-import oldEbonheart        from '/src/mock-database/releases/old-ebonheart.json'
-import sacredEast          from '/src/mock-database/releases/sacred-east.json'
-import aanthirrin          from '/src/mock-database/releases/aanthirin.json'
-import telvannis           from '/src/mock-database/releases/telvannis.json'
-import vvardenfell         from '/src/mock-database/releases/vanilla.json'
-import solstheim           from '/src/mock-database/releases/bloodmoon.json'
-import firemoth            from '/src/mock-database/releases/firemoth.json'
+import antediluvianSecrets         from '/src/mock-database/releases/antediluvian-secrets.json'
+import sacredEastUpdate            from '/src/mock-database/releases/2013-release.json'
+import oldEbonheart                from '/src/mock-database/releases/old-ebonheart.json'
+import sacredEast                  from '/src/mock-database/releases/sacred-east.json'
+import aanthirrin                  from '/src/mock-database/releases/aanthirin.json'
+import telvannis                   from '/src/mock-database/releases/telvannis.json'
+import vvardenfell                 from '/src/mock-database/releases/vanilla.json'
+import solstheim                   from '/src/mock-database/releases/bloodmoon.json'
+import firemoth                    from '/src/mock-database/releases/firemoth.json'
+import imperialTelvannisOverhaul   from '/src/mock-database/releases/imperial-telvannis-overhaul.json'
 
-const releases = [antediluvianSecrets, sacredEastUpdate, oldEbonheart, sacredEast, aanthirrin, telvannis, vvardenfell, solstheim, firemoth];
+const releases = [antediluvianSecrets, sacredEastUpdate, oldEbonheart, sacredEast, aanthirrin, telvannis, vvardenfell, solstheim, firemoth, imperialTelvannisOverhaul];
 
 
 import ro1 from '/src/mock-database/exterior-claims/RO_1.json'
