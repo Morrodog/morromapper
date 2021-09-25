@@ -124,13 +124,17 @@ export default function generateMapSnapshot(allDocuments: Document[], snapshotTi
   var cellStatuses = {};
 
   unblobbedCells.forEach((cell) => {
-    var { finishedReleases, unfinishedReleases, exteriorClaims, interiorClaims, questClaims } = cellsToDocuments[cell].reduce((cellDocumentsByType, doc) => {
+    var { finishedReleases, unfinishedReleases, exteriorClaims, interiorClaims, questClaims, otherClaims } = cellsToDocuments[cell].reduce((cellDocumentsByType, doc) => {
       switch(doc.type) {
           case "RELEASE":
-          if(!!doc.releaseDate) {
-            cellDocumentsByType.finishedReleases.push(doc);
-          } else {
+          if(!doc.releaseDate) {
             cellDocumentsByType.unfinishedReleases.push(doc);
+          } else {
+            if(doc.releaseDate > snapshotTime) {
+              cellDocumentsByType.unfinishedReleases.push(doc);
+            } else {
+              cellDocumentsByType.finishedReleases.push(doc);
+            }
           }
           break;
           case "CLAIM":
@@ -141,6 +145,8 @@ export default function generateMapSnapshot(allDocuments: Document[], snapshotTi
             cellDocumentsByType.interiorClaims.push(doc);
           } else if(doc.claimType === ClaimType.QUEST) {
             cellDocumentsByType.questClaims.push(doc);
+          } else {
+            cellDocumentsByType.otherClaims.push(doc);
           }
           break;
       }
@@ -150,7 +156,8 @@ export default function generateMapSnapshot(allDocuments: Document[], snapshotTi
       unfinishedReleases: [],
       exteriorClaims: [],
       interiorClaims: [],
-      questClaims: []
+      questClaims: [],
+      otherClaims: []
     });
 
     var containedByRelease = (finishedReleases.length > 0)
@@ -192,6 +199,7 @@ export default function generateMapSnapshot(allDocuments: Document[], snapshotTi
 
     // Storing the status of un-borderblobbed cells for step 3.
     if(!inBorderBlob) {
+      let hasClaims = (exteriorClaims.length + interiorClaims.length + questClaims.length + otherClaims.length) > 0;
       let hasExteriors = exteriorClaims.length > 0;
       let hasInteriors = interiorClaims.length > 0;
       let noUnfinishedInteriors = noUnfinishedClaimStatuses(interiorClaims.map((interiorClaim) => {
@@ -203,7 +211,7 @@ export default function generateMapSnapshot(allDocuments: Document[], snapshotTi
       let hasCompletedQuests = questClaims.filter((questClaim) => {
         return statusForClaim(questClaim, snapshotTime) === ClaimStatus.DONE;
       }).length > 0;
-      cellStatuses[cell] = statusForCell(hasExteriors, hasInteriors, noUnfinishedInteriors, noUnfinishedExteriors, hasCompletedQuests);
+      cellStatuses[cell] = statusForCell(hasExteriors, hasInteriors, noUnfinishedInteriors, noUnfinishedExteriors, hasCompletedQuests, false, false, hasClaims);
     }
   });
 

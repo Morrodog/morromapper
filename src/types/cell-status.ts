@@ -31,8 +31,6 @@ enum CellStatus {
   /**
    * A `BLANK` cell has been explicitly marked blank, and will look the same as a cell that is not 
    * in any releases or claims.
-   * 
-   * This primarily exists as a utility status, rather than an intended status for a given cell.
    */
   BLANK = "BLANK",
   /**

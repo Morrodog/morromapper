@@ -5,10 +5,23 @@ import Document      from '/src/types/document.ts'
 
 import { statusForClaim } from '/src/utils/status-for-claim.ts'
 
-// Contains the fundamental logic for deciding what color a cell should be.
-// Separate from statusForCellFromDocuments because this is used in `generateMapSnapshot` in a context where
-// it would be redundant for the statusForCell function to iterate over a cell's documents.
-export function statusForCell(hasExteriors, hasInteriors, noUnfinishedInteriors, noUnfinishedExteriors, hasCompletedQuests) {
+// Determines which `CellStatus` is appropriate for a cell.
+export function statusForCell(hasExteriors, hasInteriors, noUnfinishedInteriors, noUnfinishedExteriors, hasCompletedQuests, inFinishedRelease, inOngoingRelease, hasClaims) {
+  // Release logic takes priority
+  if(inFinishedRelease) {
+    if(inOngoingRelease) {
+      return CellStatus.UNDER_REVISION;
+    } else {
+      return CellStatus.RELEASED
+    }
+  }
+
+  // If the cell has no claims, and is not in any releases, then it should be blank.
+  if(!inFinishedRelease && !inOngoingRelease && !hasClaims) {
+    return CellStatus.BLANK
+  }
+
+
   if(!hasExteriors) return CellStatus.HAS_NO_EXTERIOR;
   if(!noUnfinishedExteriors) return CellStatus.HAS_NO_EXTERIOR;
   // From this point forward, it can be assumed that the exterior is finished.
@@ -84,8 +97,13 @@ export function statusForCellFromDocuments(cellDocuments, snapshotTime) {
   var hasInteriors = claimStatuses[ClaimType.INTERIOR].length > 0;
   var noUnfinishedInteriors = noUnfinishedClaimStatuses(claimStatuses[ClaimType.INTERIOR]);
   var noUnfinishedExteriors = noUnfinishedClaimStatuses(claimStatuses[ClaimType.EXTERIOR]);
+  var inFinishedReleases = finishedReleases.length > 0;
+  var inOngoingReleases = ongoingReleases.length > 0;
+  var hasClaims = Object.values(claimStatuses).reduce((claimTypes, claimType) => {
+    return claimTypes.concat(claimType);
+  }).length > 0;
   var hasCompletedQuests = claimStatuses[ClaimType.QUEST].filter((questStatus) => {
     return questStatus === ClaimStatus.DONE;
   }).length > 0;
-  return statusForCell(hasExteriors, hasInteriors, noUnfinishedInteriors, noUnfinishedExteriors, hasCompletedQuests);
+  return statusForCell(hasExteriors, hasInteriors, noUnfinishedInteriors, noUnfinishedExteriors, hasCompletedQuests, inFinishedReleases, inOngoingReleases, hasClaims);
 }
