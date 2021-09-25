@@ -47,7 +47,7 @@
       };
     },
     created() {
-      this.l().mapInitialization.then(() => {
+      this.l().mapInit.then((map) => {
         /*
          * Without this protection, the current behavior is for the first mm-dialog to be replaced. 
          * In the future, support for multiple concurrently existing `mm-dialog`s may be added.
@@ -56,12 +56,11 @@
          * added to an `mm-map`, but it will be `false` if an `mm-dialog` was removed from a map,
          * and another one added.
          */
-        if(!!this.l().map.containsDialog) {
+        if(!!map.containsDialog) {
           throw new Error("Only one `mm-dialog` may exist inside of an `mm-map` at the same time.");
         } else {
-          this.l().map.containsDialog = true;
+          map.containsDialog = true;
         }
-
       });
     },
     props: {
@@ -94,7 +93,7 @@
       isOpen: {
         immediate: true,
         handler(newVal) {
-          this.l().mapInitialization.then(() => {
+          this.l().mapInit.then(() => {
             if(newVal) {
               if(this.dialogAttached) {
                 this.dialog.open();
@@ -110,7 +109,7 @@
       }
     },
     render() {
-      this.l().mapInitialization.then(() => {
+      this.l().mapInit.then(() => {
         if(this.dialogAttached) {
           var dialogDiv = document.getElementById(this.dialogDivId);
           dialogDiv.innerHTML = "";
@@ -132,25 +131,29 @@
     methods: {
       // Note: dialog-related event listeners registered before the dialog is added do not work.
       attachDialog() {
-        this.dialog.addTo(this.l().map)
-        this.dialog.showClose();
-        this.dialog.unfreeze();
-        this.l().map.on('dialog:closed', (dialogClosed) => {
-          if(dialogClosed._leafletId === this.dialog._leafletId && this.isOpen) {
-            this.autoIsOpen = false;
-          }
-        });
-        this.l().map.on('dialog:opened', (dialogOpened) => {
-          if(dialogOpened._leafletId === this.dialog._leafletId && !this.isOpen) {
-            this.autoIsOpen = true;
-          }
-        });
-        this.dialogAttached = true;
+        this.l().mapInit.then((map) => {
+          this.dialog.addTo(map)
+          this.dialog.showClose();
+          this.dialog.unfreeze();
+          map.on('dialog:closed', (dialogClosed) => {
+            if(dialogClosed._leafletId === this.dialog._leafletId && this.isOpen) {
+              this.autoIsOpen = false;
+            }
+          });
+          map.on('dialog:opened', (dialogOpened) => {
+            if(dialogOpened._leafletId === this.dialog._leafletId && !this.isOpen) {
+              this.autoIsOpen = true;
+            }
+          });
+          this.dialogAttached = true;
+        }
       }
     },
     beforeDestroy() {
       this.dialog.destroy();
-      this.l().map.containsDialog = false;
+      this.l().mapInit.then((map) => {
+        map.containsDialog = false;
+      });
     }
   })
 </script>

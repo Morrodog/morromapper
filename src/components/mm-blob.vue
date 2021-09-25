@@ -69,7 +69,7 @@
 
       // Lifecycle hooks
       onBeforeUnmount(() => {
-        //l().blobsLayerGroup.removeLayer(polygon);
+        l().blobsLayerGroup.removeLayer(polygon);
       });
 
       // Computations
@@ -118,7 +118,7 @@
         // to put tooltip contents into the component hierarchy so that they'll be reactive.
         if(!slots.hasOwnProperty('tooltip')) return null;
         // TODO? Ensure that tooltip div exists
-        l().mapInitialization.then(() => {
+        l().mapInit.then((map) => {
           tooltip.setContent(renderVNodes(slots.tooltip()));
           //var tooltipDiv = document.getElementById(tooltipDivId);
           //tooltipDiv.innerHTML = "";
@@ -140,7 +140,7 @@
     /*render() {
 
       // TODO? Ensure that tooltip div exists
-      this.l().mapInitialization.then(() => {
+      this.l().mapInit.then(() => {
         var tooltipDiv = document.getElementById(this.tooltipDivId);
         tooltipDiv.innerHTML = "";
         tooltipDiv.appendChild(renderVNodes(this.$slots.tooltip()));

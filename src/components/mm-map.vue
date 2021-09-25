@@ -43,10 +43,9 @@
    *
    * The stored objects have this shape:
    * {
-   *   map: L.Map
    *   cellsLayerGroup: L.LayerGroup
    *   blobsLayerGroup: L.LayerGroup
-   *   mapInitialization
+   *   mapInit: Promise (resolves to L.Map)
    * }
    */
   var leafletStorage = [];
@@ -70,14 +69,13 @@
       var leafletStorageKey = ref(leafletStorage.length);
       var hoverCell = ref({});
       leafletStorage[leafletStorageKey.value] = {
-        map: null,
         cellsLayerGroup: L.layerGroup([]),
         blobsLayerGroup: L.layerGroup([]),
         /*
-         * To implement a `mapInitialization` property as a promise, we need to synchronously declare a Promise here,
+         * To implement a `mapInit` property as a promise, we need to synchronously declare a Promise here,
          * and still have the `resolve` function available on and in `mounted`. To accomplish this,
          * a private property is added to the provided object containing the `resolve` function created
-         * for the `mapInitialization` `Promise`. This property are not intended for use outside of `mm-map`.
+         * for the `mapInit` `Promise`. This property are not intended for use outside of `mm-map`.
         */
         ...(() => {
           var resolveInit = null;
@@ -85,8 +83,8 @@
             resolveInit = resolve;
           });
           return {
-            mapInitialization: mapInit,
-            _mapInitializationResolve: resolveInit,
+            mapInit: mapInit,
+            _mapInitResolve: resolveInit,
           };
         })()
       };
@@ -119,11 +117,10 @@
 
         this.l().cellsLayerGroup.addTo(map);
         this.l().blobsLayerGroup.addTo(map);
-        leafletStorage[this.leafletStorageKey].map = map;
-        //this.addEventListenersToEvented(map); // Defined in mixins/leaflet-event-handlers.ts
 
         L.imageOverlay(this.backgroundmapMetadata.imageURL, BOUNDS).addTo(map);
         map.fitBounds(BOUNDS);
+        this.l()._mapInitResolve(map);
         return map;
       },
     },
@@ -152,7 +149,6 @@
     },
     mounted() {
       this.initializeMap(this.$el);
-      this.l()._mapInitializationResolve();
     },
   })
 </script>
