@@ -44,9 +44,10 @@
    * The stored objects have this shape:
    * {
    *   cellsLayerGroup: L.LayerGroup
-   *   blobsLayerGroup: L.LayerGroup
    *   mapInit: Promise (resolves to L.Map)
    * }
+   *
+   * TODO: Eliminate this contrivance by having variables in a setup function instead.
    */
   var leafletStorage = [];
 
@@ -70,7 +71,6 @@
       var hoverCell = ref({});
       leafletStorage[leafletStorageKey.value] = {
         cellsLayerGroup: L.layerGroup([]),
-        blobsLayerGroup: L.layerGroup([]),
         /*
          * To implement a `mapInit` property as a promise, we need to synchronously declare a Promise here,
          * and still have the `resolve` function available on and in `mounted`. To accomplish this,
@@ -116,7 +116,6 @@
         L.control.fullscreen({}).addTo(map);
 
         this.l().cellsLayerGroup.addTo(map);
-        this.l().blobsLayerGroup.addTo(map);
 
         L.imageOverlay(this.backgroundmapMetadata.imageURL, BOUNDS).addTo(map);
         map.fitBounds(BOUNDS);

@@ -44,7 +44,7 @@
       // Required Props
       const { cells, color } = toRefs(props);
       // Optional Props
-      const hasBorder      = toRef(props, 'hasBorder');
+      const hasBorder = toRef(props, 'hasBorder');
       // Injections
       const l = inject('l');
       const backgroundmapMetadata = inject('backgroundmapMetadata');
@@ -57,7 +57,9 @@
 
       // Lifecycle hooks
       onBeforeUnmount(() => {
-        l().blobsLayerGroup.removeLayer(polygon);
+        l().mapInit.then((map) => {
+        map.removeLayer(polygon);
+        });
       });
 
       // Computations
@@ -88,53 +90,15 @@
       blobBoundaryUpdate(blobBoundary.value);
       colorUpdate(color.value);
       hasBorderUpdate(hasBorder.value);
-      polygon.addTo(l().blobsLayerGroup);
+      l().mapInit.then((map) => {
+        polygon.addTo(map);
+      })
 
       // Render tooltip
       const slots = context.slots;
       return () => {
-        // The use of the render function for this component is only 
-        // to put tooltip contents into the component hierarchy so that they'll be reactive.
-        if(!slots.hasOwnProperty('tooltip')) return null;
-        // TODO? Ensure that tooltip div exists
-        l().mapInit.then((map) => {
-          tooltip.setContent(renderVNodes(slots.tooltip()));
-          //var tooltipDiv = document.getElementById(tooltipDivId);
-          //tooltipDiv.innerHTML = "";
-          //tooltipDiv.appendChild(renderVNodes(slots.tooltip()));
-        });
-        /* To get reactivity in the tooltip, we need to return the slot content from the
-         * render function even if we don't want the element in the default slot to be 
-         * rendered inside of the actual `mm-map` element hierarchy. To get around this, 
-         * we return the slots, but we hide them from the user.
-         */
-        return h(
-          'div', {
-            style: "display: none;"
-          },
-          slots.tooltip()
-        );
+        return null;
       };
     }
-    /*render() {
-
-      // TODO? Ensure that tooltip div exists
-      this.l().mapInit.then(() => {
-        var tooltipDiv = document.getElementById(this.tooltipDivId);
-        tooltipDiv.innerHTML = "";
-        tooltipDiv.appendChild(renderVNodes(this.$slots.tooltip()));
-      });
-      /* To get reactivity in the dialog, we need to return the slot content from the
-       * render function even if we don't want the element in the default slot to be 
-       * rendered inside of the actual `mm-map` element hierarchy. To get around this, 
-       * we return the slots, but we hide them from the user.
-       *
-      return h(
-        'div', {
-          style: "display: none;"
-        },
-        this.$slots.tooltip()
-      );
-    }*/
   })
 </script>
