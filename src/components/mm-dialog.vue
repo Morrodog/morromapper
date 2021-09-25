@@ -146,7 +146,7 @@
             }
           });
           this.dialogAttached = true;
-        }
+        });
       }
     },
     beforeDestroy() {

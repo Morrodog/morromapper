@@ -38,29 +38,17 @@
         type: Boolean,
         required: false,
         default: false
-      },
-      tooltipVisible: {
-        type: Boolean,
-        required: false,
-        default: false
       }
     },
     setup(props, context) {
       // Required Props
       const { cells, color } = toRefs(props);
       // Optional Props
-      const tooltipVisible = toRef(props, 'tooltipVisible');
       const hasBorder      = toRef(props, 'hasBorder');
       // Injections
       const l = inject('l');
       const backgroundmapMetadata = inject('backgroundmapMetadata');
       // Instance-scoped unreactive properties
-      const tooltipDivId = `dialog-div-${v4()}`;
-      const tooltip = L.tooltip({
-        content: `<div id="${tooltipDivId}"></div>`,
-        sticky: true,
-        permanent: true
-      });
       const polygon = L.polygon([], {
         // Other style properties are determined after initialization by `mm-blob` component props.
         "fillOpacity": 1.00,
@@ -78,37 +66,28 @@
       });
 
       // Watchers
-      var updateBlobBoundary = (newVal) => {
+      var blobBoundaryUpdate = (newVal) => {
         polygon.setLatLngs(newVal);
       };
-      var updateColor = (newVal) => {
+      var colorUpdate = (newVal) => {
         polygon.setStyle({
           fillColor: newVal,
           color: newVal.slice(0, 7)// Remove opacity for border
         });
       };
-      var updateHasBorder = (newVal) => {
+      var hasBorderUpdate = (newVal) => {
         polygon.setStyle({
           stroke: newVal
         });
       };
-      var updateTooltipVisible = (newVal) => {
-        if(newVal) {
-          console.log("Attempting to show tooltip");
-          polygon.openTooltip(tooltip);
-        } else {
-          polygon.closeTooltip(tooltip);
-        }
-      };
-      watch(tooltipVisible, updateTooltipVisible);
-      watch(blobBoundary,   updateBlobBoundary);
-      watch(hasBorder,      updateHasBorder);
-      watch(color,          updateColor);
+      watch(blobBoundary,   blobBoundaryUpdate);
+      watch(hasBorder,      hasBorderUpdate);
+      watch(color,          colorUpdate);
 
       // Polygon initialization
-      updateBlobBoundary(blobBoundary.value);
-      updateColor(color.value);
-      updateHasBorder(hasBorder.value);
+      blobBoundaryUpdate(blobBoundary.value);
+      colorUpdate(color.value);
+      hasBorderUpdate(hasBorder.value);
       polygon.addTo(l().blobsLayerGroup);
 
       // Render tooltip
