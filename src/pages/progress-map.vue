@@ -1,7 +1,8 @@
 <template>
-  <mm-map :backgroundmap-metadata="gridmapMetadata" @click="presentCellDetails($event)">
-    <mm-popup v-model:is-visible="popupVisible" :position="origin">
-      test
+  <mm-map :backgroundmap-metadata="gridmapMetadata" @cellhover="hoverCell=$event" @click="presentCellDetails($event)">
+    <mm-popup :is-visible="!dialogOpen" :position="hoverCell">
+      <b>[{{ hoverCell.x }}, {{ hoverCell.y }}]</b><br />
+      {{ tooltipNote }}
     </mm-popup>
     <mm-snapshot v-if="!!mapSnapshot" :map-snapshot="mapSnapshot" :backgroundmapMetadata="gridmapMetadata" />
     <mm-dialog v-model:is-open="dialogOpen">
@@ -39,7 +40,7 @@
       var snapshotTime = (new Date()).toISOString();
       return {
         popupVisible: true,
-        origin: new CellXY({x: 0, y: 0}),
+        hoverCell: new CellXY({x: 0, y: 0}),
         snapshotTime,
         dialogOpen: false,
         gridmapMetadata: gridmapMetadata,
@@ -50,6 +51,16 @@
         lastClickedCell: null,
         lastClickedCellDocuments: [],
       };
+    },
+    computed: {
+      tooltipNote() {
+        if(!this.mapSnapshot) return "Waiting on data...";
+        if(this.mapSnapshot.cellDocuments.hasOwnProperty(CellXY.toObjectKey(this.hoverCell))) {
+          return `Associated with ${this.mapSnapshot.cellDocuments[CellXY.toObjectKey(this.hoverCell)].length} documents`;
+        } else {
+          return `Not in any claims or releases.`;
+        }
+      }
     },
     methods: {
       presentCellDetails(cellXY) {

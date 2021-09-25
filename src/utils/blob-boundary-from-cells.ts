@@ -5,7 +5,6 @@
 import union from '@turf/union'
 
 import BACKGROUNDMAP_BOUND_LENGTH from '/src/constants/backgroundmap-bound-length.ts'
-import BACKGROUNDMAP_BOUND_LENGTH from '/src/constants/backgroundmap-bound-length.ts'
 
 import RasterBackgroundmapMetadata from '/src/types/raster-backgroundmap-metadata.ts'
 import CellXY                      from '/src/types/cell-x-y.ts'
@@ -30,7 +29,6 @@ const getLeafletRasterRatios = (backgroundmapMetadata: BackgroundmapMetadata) =>
  * These are returned as `X` and `Y` properties of the object returned by this function.
  */
 const findFarCoordinatesOfCell = (cellXY: CellXY, backgroundmapMetadata: RasterBackgroundmapMetadata) => {
-  if(!backgroundmapMetadata) debugger;
   return {
     X: (
       (backgroundmapMetadata.originCellRightBorderX) +

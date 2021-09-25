@@ -4,6 +4,8 @@
 <script>
   import { defineComponent, h, inject, toRefs, watch } from 'vue'
 
+  import BACKGROUNDMAP_BOUND_LENGTH from '/src/constants/backgroundmap-bound-length.ts'
+
   import renderVNodes from '/src/utils/render-vnodes.ts'
 
   import CellXY from '/src/types/cell-x-y.ts'
@@ -15,9 +17,6 @@
         type: CellXY,
         required: true
       },
-      /*
-       * Should be used with v-model
-       */
       isVisible: {
         type: Boolean,
         required: true
@@ -26,26 +25,43 @@
     setup(props, context) {
       const { isVisible, position } = toRefs(props);
       const mapInitPromise = inject('l')().mapInit;
+      const backgroundmapMetadata = inject('backgroundmapMetadata');
       const popup = L.popup({
-        closeButton: false
+        closeButton: false,
+        closeOnClick: false,
+        autoClose: false,
+        closeOnEscapeKey: false
       }).setContent("");
-      var popupAttached = false;
 
       const isVisibleUpdate = (newVal) => {
         mapInitPromise.then((map) => {
+          // `popup.closePopup` doesn't seem to work here, and `map.closePopup` closes ALL popups, so 
+          // we instead add and remove the popup entirely.
           if(newVal) {
-            if(!popupAttached) {
-              popup.openOn(map);
-            } else {
-              popup.openPopup();
-            }
+            popup.openOn(map);
           } else {
-            if(popupAttached) popup.closePopup();
+            popup.removeFrom(map);
           }
         });
       };
       const positionUpdate = (newVal) => {
-        popup.setLatLng([10, 10]);
+        // The popup is placed over the top-center of the cell.
+        const leafletRatioX = BACKGROUNDMAP_BOUND_LENGTH/backgroundmapMetadata.widthPixels;
+        const leafletRatioY = BACKGROUNDMAP_BOUND_LENGTH/backgroundmapMetadata.heightPixels;
+        // We start at the rightmost border of the origin, so this moves us "backwards" by half of a cell.
+        const offsetX = newVal.x - 0.5;
+        popup.setLatLng([
+          (
+            (backgroundmapMetadata.originCellTopBorderY) +
+            (newVal.y * backgroundmapMetadata.cellSideLength) +
+            (newVal.y * backgroundmapMetadata.borderWidth)
+          ) * leafletRatioY,
+          (
+            (backgroundmapMetadata.originCellRightBorderX) +
+            (offsetX * backgroundmapMetadata.cellSideLength) +
+            (offsetX * backgroundmapMetadata.borderWidth)
+          ) * leafletRatioX
+        ]);
       };
       positionUpdate(position.value);
       isVisibleUpdate(isVisible.value);

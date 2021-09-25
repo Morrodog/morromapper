@@ -93,13 +93,13 @@
       isOpen: {
         immediate: true,
         handler(newVal) {
-          this.l().mapInit.then(() => {
+          this.l().mapInit.then((map) => {
             if(newVal) {
               if(this.dialogAttached) {
                 this.dialog.open();
               } else {
                 // The dialog opens itself once attached.
-                this.attachDialog();
+                this.attachDialog(map);
               }
             } else {
               this.dialog.close();
@@ -130,23 +130,21 @@
     },
     methods: {
       // Note: dialog-related event listeners registered before the dialog is added do not work.
-      attachDialog() {
-        this.l().mapInit.then((map) => {
-          this.dialog.addTo(map)
-          this.dialog.showClose();
-          this.dialog.unfreeze();
-          map.on('dialog:closed', (dialogClosed) => {
-            if(dialogClosed._leafletId === this.dialog._leafletId && this.isOpen) {
-              this.autoIsOpen = false;
-            }
-          });
-          map.on('dialog:opened', (dialogOpened) => {
-            if(dialogOpened._leafletId === this.dialog._leafletId && !this.isOpen) {
-              this.autoIsOpen = true;
-            }
-          });
-          this.dialogAttached = true;
+      attachDialog(map) {
+        this.dialog.addTo(map)
+        this.dialog.showClose();
+        this.dialog.unfreeze();
+        map.on('dialog:closed', (dialogClosed) => {
+          if(dialogClosed._leafletId === this.dialog._leafletId && this.isOpen) {
+            this.autoIsOpen = false;
+          }
         });
+        map.on('dialog:opened', (dialogOpened) => {
+          if(dialogOpened._leafletId === this.dialog._leafletId && !this.isOpen) {
+            this.autoIsOpen = true;
+          }
+        });
+        this.dialogAttached = true;
       }
     },
     beforeDestroy() {

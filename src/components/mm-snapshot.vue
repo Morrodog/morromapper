@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- TODO: More efficient alternative to containsHoverCell -->
     <mm-blob v-for="borderBlob in borderBlobs" :color="colorForStatus(borderBlob.cellStatus)" :cells="borderBlob.cells" :has-border="containsHoverCell(borderBlob.cells, hoverCell)" />
     <mm-blob v-for="statusBlob in statusBlobs" :color="colorForStatus(statusBlob.cellStatus)" :cells="statusBlob.cells" />
   </div>
