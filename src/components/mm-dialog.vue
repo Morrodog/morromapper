@@ -31,7 +31,6 @@
     unreactive: {
       ...(() => {
         var dialogDivId = `dialog-div-${v4()}`;
-        var slotContainerId = `slot-div-${v4()}`;
         var dialog = new L.Control.Dialog({}).setContent(`
           <div class="leaflet-control-dialog-contents-spacer"></div>
           <div id="${dialogDivId}"></div>
@@ -39,7 +38,6 @@
         return {
           dialog,
           dialogDivId,
-          slotContainerId
         };
       })()
     },
@@ -90,10 +88,7 @@
       },
       dialogDivId() {
         return this.$options.unreactive.dialogDivId;
-      },
-      slotContainerId() {
-        return this.$options.unreactive.slotContainerId;
-      },
+      }
     },
     watch: {
       isOpen: {

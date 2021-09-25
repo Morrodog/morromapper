@@ -1,7 +1,11 @@
 <template>
   <div>
-    <mm-blob v-for="borderBlob in borderBlobs" :color="colorForStatus(borderBlob.cellStatus)" :cells="borderBlob.cells" :has-border="containsHoverCell(borderBlob.cells, hoverCell)" />
-    <mm-blob v-for="statusBlob in statusBlobs" :color="colorForStatus(statusBlob.cellStatus)" :cells="statusBlob.cells" />
+    <mm-blob v-for="borderBlob in borderBlobs" :color="colorForStatus(borderBlob.cellStatus)" :cells="borderBlob.cells" :tooltip-visible="containsHoverCell(borderBlob.cells, hoverCell)" :has-border="containsHoverCell(borderBlob.cells, hoverCell)">
+      <template v-slot:tooltip>
+        test
+      </template>
+    </mm-blob>
+    <mm-blob v-for="statusBlob in statusBlobs" :color="colorForStatus(statusBlob.cellStatus)" :cells="statusBlob.cells" :tooltip-visible="containsHoverCell(statusBlob.cells, hoverCell)" />
   </div>
 </template>
 <script>
