@@ -30,7 +30,8 @@
         closeButton: false,
         closeOnClick: false,
         autoClose: false,
-        closeOnEscapeKey: false
+        closeOnEscapeKey: false,
+        autoPan: false
       }).setContent("");
 
       const isVisibleUpdate = (newVal) => {
@@ -89,3 +90,14 @@
     }
   })
 </script>
+<style>
+  /*
+   * Without this, the popup prevents `mouseover` from reaching the cellgrid below.
+   * Consequently, it was possible to "catch" the popup by getting your cursor in there faster than
+   * the position of the tooltip was updated, and the tooltip's movement was a little bit choppy when
+   * moving the mouse quickly upward on a zoomed-out map.
+   */ 
+  .leaflet-popup {
+    pointer-events: none;
+  }
+</style>
