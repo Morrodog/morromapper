@@ -1,12 +1,11 @@
 <template>
   <mm-map :backgroundmap-metadata="gridmapMetadata" @cellhover="hoverCell=$event" @click="presentCellDetails($event)">
     <mm-popup v-if="popupVisible" :position="hoverCell">
-      <b>[{{ hoverCell.x }}, {{ hoverCell.y }}]</b><br />
-      {{ tooltipNote }}
+      <mm-cell-summary :map-snapshot="mapSnapshot" :cell="hoverCell" />
     </mm-popup>
     <mm-snapshot v-if="!!mapSnapshot" :map-snapshot="mapSnapshot" :backgroundmapMetadata="gridmapMetadata" />
     <mm-dialog v-model:is-open="dialogOpen">
-      <mm-cell-info v-if="lastClickedCell" :cell-x-y="lastClickedCell" :cell-documents="lastClickedCellDocuments" :snapshot-time="snapshotTime" />
+      <mm-cell-info v-if="lastClickedCell" :cell="lastClickedCell" :map-snapshot="mapSnapshot" :snapshot-time="snapshotTime" />
     </mm-dialog>
   </mm-map>
   <div>
@@ -23,11 +22,12 @@
 <script>
   import { defineComponent} from 'vue'
 
-  import MMSnapshot from '/src/components/mm-snapshot.vue'
-  import MMCellInfo from '/src/components/mm-cell-info.vue'
-  import MMDialog   from '/src/components/mm-dialog.vue'
-  import MMPopup    from '/src/components/mm-popup.vue'
-  import MMMap      from '/src/components/mm-map.vue'
+  import MMCellSummary from '/src/components/mm-cell-summary.vue'
+  import MMSnapshot    from '/src/components/mm-snapshot.vue'
+  import MMCellInfo    from '/src/components/mm-cell-info.vue'
+  import MMDialog      from '/src/components/mm-dialog.vue'
+  import MMPopup       from '/src/components/mm-popup.vue'
+  import MMMap         from '/src/components/mm-map.vue'
 
   //import type RasterBackgroundmapMetadata from '/src/types/raster-backgroundmap-metadata.ts'
   import CellXY     from '/src/types/cell-x-y.ts'
@@ -39,6 +39,7 @@
 
   export default defineComponent({
     components: {
+      'mm-cell-summary': MMCellSummary,
       'mm-snapshot': MMSnapshot,
       'mm-dialog': MMDialog,
       'mm-popup': MMPopup,
@@ -62,20 +63,17 @@
       mapSnapshotPromise() {
         return mockDbClient.getSnapshot(this.snapshotTime);
       },
-      tooltipNote() {
-        if(!this.mapSnapshot) return "Waiting on data...";
-        if(this.mapSnapshot.cellDocuments.hasOwnProperty(CellXY.toObjectKey(this.hoverCell))) {
-          return `Associated with ${this.mapSnapshot.cellDocuments[CellXY.toObjectKey(this.hoverCell)].length} documents`;
-        } else {
-          return `Not in any claims or releases.`;
-        }
+      hoverCellKey() {
+        return CellXY.toObjectKey(this.hoverCell);
       },
       popupVisible() {
         if(this.hoverCell === null) return false;
         const cellKey = CellXY.toObjectKey(this.hoverCell);
         return (this.mapSnapshot !== null) &&
-          this.mapSnapshot.cellDocuments.hasOwnProperty(cellKey) &&
-          (this.mapSnapshot.cellDocuments[cellKey].length > 0);
+          (
+            (this.mapSnapshot.cellClaims.hasOwnProperty(cellKey) && (this.mapSnapshot.cellClaims[cellKey].length > 0)) ||
+            (this.mapSnapshot.cellReleases.hasOwnProperty(cellKey) && (this.mapSnapshot.cellReleases[cellKey].length > 0))
+          );
       }
     },
     watch: {
@@ -94,19 +92,7 @@
     methods: {
       presentCellDetails(cellXY) {
         this.lastClickedCell = cellXY;
-        var cellKey = CellXY.toObjectKey(cellXY);
-        this.mapSnapshotPromise.then(() => {
-          //TODO: Maybe avoid a request here?
-          if(!this.mapSnapshot.cellDocuments.hasOwnProperty(cellKey)) {
-            this.lastClickedCell = null;
-            this.dialogOpen = false;
-            return Promise.reject();
-          }
-          return mockDbClient.getDocuments(this.mapSnapshot.cellDocuments[cellKey]);
-        }).then((documents) => {
-          this.lastClickedCellDocuments = documents;
-          this.dialogOpen = true;
-        });
+        this.dialogOpen = true;
       },
       submitSnapshotEntry() {
         try {

@@ -33,11 +33,15 @@ import MapBlob         from './types/map-blob.ts'
  * 1. Which claims (if any) contain the cell
  * 2. Which releases (if any) contain the cell
  *
+ * These functions are served separately by the `cellReleases` and `cellClaims` fields, so that
+ * the number of claims and of releases can be shown to the user in the tooltip.
+ *
  * To accomplish this, MapSnapshot contains a list of all of the colored cells on the map, and each is given a list of IDs.
  * These are IDs may be of claim documents or release documents.
  */
 interface MapSnapshot {
   borderBlobs: MapBlob[];
   statusBlobs: Object;  // Each key is a CellStatus, and each value are all of the non-borderblob cells that share that status.
-  cellDocuments: Object;// Each key is a string created by `CellXY.toObjectKey`, and each value is a list of document IDs for retrieval on click.
+  cellClaims: Object;// Each key is a string created by `CellXY.toObjectKey`, and each value is a list of document IDs of claims containing the cell for retrieval on click.
+  cellReleases: Object;// Each key is a string created by `CellXY.toObjectKey`, and each value is a list of document IDs of releases containing the cell for retrieval on click.
 }

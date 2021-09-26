@@ -17,23 +17,22 @@ import statusForCell  from '/src/utils/status-for-cell.ts'
  *  1. RELEASE
  *  2. CLAIM
  */
-export default function generateMapSnapshot(allDocuments: Document[], snapshotTime: string): MapSnapshot {
+export default function generateMapSnapshot(documents: Document[], snapshotTime: string): MapSnapshot {
   /*
    * The snapshot is generated in these steps:
-   * 0. Documents from before the snapshot existed are filtered out.
-   * 1. A mapping is made from cells to the documents that contain them.
+   * 1. Identify cells
+   *    A mapping is made from cells to the documents that contain them.
    *    Exterior claims and releases are also identified in this step to avoid
    *    iterating over all of the documents twice.
-   * 2. The exteriors and releases from earlier are used to compute the `borderBlobs`.
+   * 2. Iterate over cells
+   *    The exteriors and releases from earlier are used to compute the `borderBlobs`.
+   *    During this step, claims and releases for each cell are also distinguished.
    * 3. The remaining cells are put in `statusBlobs` according to their `CellStatus`es.
-   * 4. The mapping from cells to documents is turned into a mapping from cells to document IDs,
-   * and that becomes `cellDocuments`.
-   *
-   * TODO? change cellsToDocuments to a Map of `CellXY` to array of `Document`s
    */
-  var mapSnapshot = {
+  const mapSnapshot = {
     borderBlobs: [],  // Replaced in step 2
-
+    cellReleases: {}, // Replaced in step 2
+    cellClaims: {},   // Replaced in step 2
     // Populated in step 3
     statusBlobs: {
       [CellStatus.RELEASED]:           [],
@@ -45,13 +44,7 @@ export default function generateMapSnapshot(allDocuments: Document[], snapshotTi
       [CellStatus.INTERIORS_FINISHED]: [],
       [CellStatus.HAS_QUESTS]:         [],
     },
-    cellDocuments: [] // Replaced in step 4
   };
-
-  // Step 0
-  var documents = allDocuments.filter((doc) => {
-    return doc.docCreatedDate <= snapshotTime;
-  });
 
   // Step 1
   var cellsToDocuments = {};
@@ -59,6 +52,7 @@ export default function generateMapSnapshot(allDocuments: Document[], snapshotTi
   var releases = [];
   var releaseCells = []; 
   documents.forEach((doc) => {
+    if(doc.docCreatedDate > snapshotTime) return;
     var cells;
     switch(doc.type) {
         case "CLAIM":
@@ -122,6 +116,8 @@ export default function generateMapSnapshot(allDocuments: Document[], snapshotTi
   }, {});
   // Maps from cellKey to CellStatus. Used later for `statusBlobs`.
   var cellStatuses = {};
+  const cellsToReleaseIds = {};
+  const cellsToClaimIds = {};
 
   // Returns true when given 0 claims.
   const noUnfinishedClaimStatuses = (claimStatuses, snapshotTime) => {
@@ -130,9 +126,12 @@ export default function generateMapSnapshot(allDocuments: Document[], snapshotTi
     });
   }
   unblobbedCells.forEach((cell) => {
+    cellsToReleaseIds[cell] = [];
+    cellsToClaimIds[cell] = [];
     var { finishedReleases, unfinishedReleases, exteriorClaims, interiorClaims, questClaims, otherClaims } = cellsToDocuments[cell].reduce((cellDocumentsByType, doc) => {
       switch(doc.type) {
           case "RELEASE":
+          cellsToReleaseIds[cell].push(doc.id);
           if(!doc.releaseDate) {
             cellDocumentsByType.unfinishedReleases.push(doc);
           } else {
@@ -144,6 +143,7 @@ export default function generateMapSnapshot(allDocuments: Document[], snapshotTi
           }
           break;
           case "CLAIM":
+          cellsToClaimIds[cell].push(doc.id);
           if(statusForClaim(doc, snapshotTime) === ClaimStatus.CLOSED) break; // Closed claims are ignored for cell coloring purposes.
           if(doc.claimType === ClaimType.EXTERIOR) {
             cellDocumentsByType.exteriorClaims.push(doc);
@@ -220,6 +220,8 @@ export default function generateMapSnapshot(allDocuments: Document[], snapshotTi
       cellStatuses[cell] = statusForCell(hasExteriors, hasInteriors, noUnfinishedInteriors, noUnfinishedExteriors, hasCompletedQuests, false, false, hasClaims);
     }
   });
+  mapSnapshot.cellReleases = cellsToReleaseIds;
+  mapSnapshot.cellClaims = cellsToClaimIds;
 
   // Removing cells in borderBlobbed exteriors
   var exteriorBlobCells = Object.values(exteriorBlobs).map((exteriorBlob) => {
@@ -253,13 +255,6 @@ export default function generateMapSnapshot(allDocuments: Document[], snapshotTi
   Object.entries(cellStatuses).forEach((statusBlobEntry) => {
     mapSnapshot.statusBlobs[statusBlobEntry[1]].push(CellXY.fromObjectKey(statusBlobEntry[0]));
   });
-
-  // Step 4
-  mapSnapshot.cellDocuments = Object.fromEntries(Object.entries(cellsToDocuments).map((entry) => {
-    return [entry[0], entry[1].map((doc) => {
-      return doc.id;
-    })];
-  }));
 
   return mapSnapshot;
 }

@@ -88,8 +88,12 @@ export default {
     });
   },
   getDocuments(documentIds) {
-    return Promise.resolve(documentIds.map((id) => {
-      return documentsById[id];
-    }));
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(documentIds.map((id) => {
+          return documentsById[id];
+        }));
+      }, 2000);
+    });
   }
 }

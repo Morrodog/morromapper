@@ -3,9 +3,21 @@
   TODO Make component for lists of claims
  -->
 <template>
-  <div>
+  <template v-if="loadingDocuments">
+    <template v-if="hasClaims && !hasReleases">
+      Loading claims...
+    </template>
+    <template v-if="hasReleases && !hasClaims">
+      Loading release information...
+    </template>
+    <template v-if="hasReleases && hasClaims">
+      Loading claims and releases...
+    </template>
+  </template>
+  <div v-else>
     <b>{{ cellCoords }}</b> Stage: {{ cellStatus }}
-    <mm-cell-info--claim-list v-for="claimsWithType in claimsByType" :claims="claimsWithType.claims" :claim-type="claimsWithType.claimType" :snapshot-time="snapshotTime"/>
+    <!-- TODO: Releases -->
+    <mm-cell-info--claim-list v-for="claimsWithType in claimsByType" :claims="claimsWithType.claims" :claim-type="claimsWithType.claimType" :snapshot-time="snapshotTime" />
   </div>
 </template>
 <script lang="ts">
@@ -18,17 +30,19 @@
 
   import statusForCellFromDocuments from '/src/utils/status-for-cell-from-documents.ts'
 
+  import mockDbClient from '/src/mock-database/client.ts'
+
   export default defineComponent({
     components: {
       'mm-cell-info--claim-list': MMCellInfoClaimList 
     },
     props: {
-      cellXY: {
+      cell: {
         type: CellXY,
         required: true
       },
-      cellDocuments: {
-        type: Array,// Of `Document`
+      mapSnapshot: {
+        type: Object, // Of `MapSnapshot` interface
         required: true
       },
       snapshotTime: {
@@ -36,19 +50,39 @@
         required: true
       }
     },
+    data() {
+      return {
+        cellDocuments: [],
+        loadingDocuments: true
+      };
+    },
     computed: {
-      cellStatus() {
-        return statusForCellFromDocuments(this.cellDocuments, this.snapshotTime);
-      },
       claims() {
-        return this.cellDocuments.filter((cellDoc) => {
-          return cellDoc.type === "CLAIM";
+        return this.cellDocuments.filter((doc) => {
+          return doc.type === "CLAIM";
         });
       },
       releases() {
-        return this.cellDocuments.filter((cellDoc) => {
-          return cellDoc.type === "RELEASE";
+        return this.cellDocuments.filter((doc) => {
+          return doc.type === "RELEASE";
         });
+      },
+      hasClaims() {
+        const cellKey = CellXY.toObjectKey(this.cell);
+        if(!this.mapSnapshot.cellClaims.hasOwnProperty(cellKey)) return false;
+        return this.mapSnapshot.cellClaims[cellKey].length > 0;
+      },
+      hasReleases() {
+        const cellKey = CellXY.toObjectKey(this.cell);
+        if(!this.mapSnapshot.cellReleases.hasOwnProperty(cellKey)) return false;
+        return this.mapSnapshot.cellReleases[cellKey].length > 0;
+      },
+      cellDocumentsPromise() {
+        const cellKey = CellXY.toObjectKey(this.cell);
+        return mockDbClient.getDocuments(this.mapSnapshot.cellClaims[cellKey].concat(this.mapSnapshot.cellReleases[cellKey]));
+      },
+      cellStatus() {
+        return statusForCellFromDocuments(this.cellDocuments, this.snapshotTime);
       },
       // TODO: Rename and generally clean up
       claimsByType() {
@@ -69,23 +103,20 @@
           return claimsByType;
         }, []);
       },
-      interiorClaims() {
-        return this.claimsByType[ClaimType.INTERIOR];
-      },
-      exteriorClaims() {
-        return this.claimsByType[ClaimType.EXTERIOR];
-      },
-      conceptClaims() {
-        return this.claimsByType[ClaimType.CONCEPT];
-      },
-      assetClaims() {
-        return this.claimsByType[ClaimType.ASSET];
-      },
-      questClaims() {
-        return this.claimsByType[ClaimType.QUEST];
-      },
       cellCoords() {
-        return `[${this.cellXY.x}, ${this.cellXY.y}]`;
+        return `[${this.cell.x}, ${this.cell.y}]`;
+      }
+    },
+    watch: {
+      cellDocumentsPromise: {
+        immediate: true,
+        handler(newVal) {
+          this.loadingDocuments = true;
+          newVal.then((documents) => {
+            this.cellDocuments = documents;
+            this.loadingDocuments = false;
+          });
+        }
       }
     }
   });
