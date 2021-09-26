@@ -23,6 +23,10 @@ interface Release extends Document {
    */
   name: string
   /**
+   * Used to create a link so that the user can see more information about the release.
+   */
+  url: string
+  /**
    * ISO 8601 representation of the date/time GMT when work formally started on the release.
    */
   startDate: string;
