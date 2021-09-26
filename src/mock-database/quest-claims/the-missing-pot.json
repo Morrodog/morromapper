@@ -7,6 +7,7 @@
     "claimType":"QUEST",
     "name":"The Missing Pot",
     "updates":[
-      {"newClaimStatus":"NOT_STARTED","changeDate":"2019-07-02T01:00:00.000Z"}
+      {"newClaimStatus":"NOT_STARTED","changeDate":"2019-07-02T01:00:00.000Z"},
+      {"newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-08T01:00:00.000Z"}
     ]
 }

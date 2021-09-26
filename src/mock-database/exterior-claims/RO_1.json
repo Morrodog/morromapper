@@ -10,6 +10,14 @@
     {
       "newClaimStatus": "NOT_STARTED",
       "changeDate": "2019-07-02T00:00:00.000Z"
+    },
+    {
+      "newClaimStatus": "IN_PROGRESS",
+      "changeDate": "2019-07-04T00:00:00.000Z"
+    },
+    {
+      "newClaimStatus": "DONE",
+      "changeDate": "2019-07-07T00:00:00.000Z"
     }
   ]
 }

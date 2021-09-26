@@ -5,7 +5,7 @@
   "url": "https://www.tamriel-rebuilt.org/claims/shipal-shin-06-shipal-sharai",
   "cells": [{"x":40,"y":-41},{"x":39,"y":-41},{"x":38,"y":-41},{"x":37,"y":-41},{"x":37,"y":-42},{"x":38,"y":-42},{"x":39,"y":-42},{"x":40,"y":-42},{"x":39,"y":-43},{"x":38,"y":-43}],
   "claimType": "EXTERIOR",
-  "name": "Random Ocean 4 (RO_4)",
+  "name": "Fort Dogmoth (RO_4)",
   "updates": [
     {
       "newClaimStatus": "NOT_STARTED",
@@ -14,6 +14,10 @@
     {
       "newClaimStatus": "IN_PROGRESS",
       "changeDate": "2019-07-05T00:00:00.000Z"
+    },
+    {
+      "newClaimStatus": "DONE",
+      "changeDate": "2019-07-07T00:00:00.000Z"
     }
   ]
 }

@@ -1,0 +1,14 @@
+{
+  "id":"1c3886dddbaaasdvfa-846e-95iiffwwiiiasdf",
+  "docCreatedDate": "2019-07-02T01:00:00.000Z",
+  "type":"CLAIM",
+  "url":"https://www.tamriel-rebuilt.org/claims/ito-firewatch-drakelight-beacon",
+  "cells": [{"x":39,"y":-38},{"x":39,"y":-39},{"x":40,"y":-39},{"x":40,"y":-38},{"x":41,"y":-38},{"x":41,"y":-39}],
+  "claimType":"INTERIOR",
+  "name":"Underopolis",
+  "updates":[
+    {"newClaimStatus":"NOT_STARTED","changeDate":"2019-07-02T01:00:00.000Z"},
+    {"newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-03T01:00:00.000Z"},
+    {"newClaimStatus":"DONE","changeDate":"2019-07-10T01:00:00.000Z"}
+  ]
+}

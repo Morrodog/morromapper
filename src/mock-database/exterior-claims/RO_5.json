@@ -1,0 +1,23 @@
+{
+  "id": "asqsaldkfvvxxxqqqqdasdfadasdfkjhskdajhfaskdjhfaskdjfh",
+  "type": "CLAIM",
+  "docCreatedDate": "2019-07-02T00:00:00.000Z",
+  "url": "https://www.tamriel-rebuilt.org/claims/shipal-shin-01-narsis",
+  "cells": [{"x":39,"y":-40},{"x":38,"y":-40},{"x":38,"y":-39},{"x":38,"y":-38},{"x":37,"y":-38},{"x":36,"y":-38},{"x":36,"y":-39},{"x":36,"y":-40},{"x":37,"y":-40},{"x":37,"y":-39}],
+  "claimType": "EXTERIOR",
+  "name": "Random Ocean 5 (RO_5)",
+  "updates": [
+    {
+      "newClaimStatus": "NOT_STARTED",
+      "changeDate": "2019-07-02T00:00:00.000Z"
+    },
+    {
+      "newClaimStatus": "IN_PROGRESS",
+      "changeDate": "2019-07-04T00:00:00.000Z"
+    },
+    {
+      "newClaimStatus": "DONE",
+      "changeDate": "2019-07-05T00:00:00.000Z"
+    }
+  ]
+}

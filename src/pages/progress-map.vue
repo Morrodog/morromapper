@@ -95,10 +95,10 @@
         this.dialogOpen = true;
       },
       submitSnapshotEntry() {
-        try {
+        //try {
           new Date(this.snapshotEntry);
           this.snapshotTime = this.snapshotEntry;
-        } catch(e) {}
+        //} catch(e) {}
       }
     }
   })

@@ -1,0 +1,14 @@
+{
+  "id":"1c3886dddba-846e-95iiiiiasdf",
+  "docCreatedDate": "2019-07-02T01:00:00.000Z",
+  "type":"CLAIM",
+  "url":"https://www.tamriel-rebuilt.org/claims/olanar-vadridan",
+  "cells":[{"x":38,"y":-38},{"x":38,"y":-39}],
+  "claimType":"INTERIOR",
+  "name":"Rose's Boats",
+  "updates":[
+    {"newClaimStatus":"NOT_STARTED","changeDate":"2019-07-02T01:00:00.000Z"},
+    {"newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-03T01:00:00.000Z"},
+    {"newClaimStatus":"DONE","changeDate":"2019-07-04T01:00:00.000Z"}
+  ]
+}

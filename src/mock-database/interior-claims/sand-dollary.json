@@ -1,0 +1,15 @@
+
+{
+  "id":"1c3san-----d886dddbaaasdvfccccdf",
+  "docCreatedDate": "2019-07-02T01:00:00.000Z",
+  "type":"CLAIM",
+  "url":"https://www.tamriel-rebuilt.org/claims/thirr-valley-4-shipwreck",
+  "cells": [{"x":42,"y":-41},{"x":42,"y":-40},{"x":41,"y":-41},{"x":41,"y":-40}],
+  "claimType":"INTERIOR",
+  "name":"Sand Gallery",
+  "updates":[
+    {"newClaimStatus":"NOT_STARTED","changeDate":"2019-07-02T01:00:00.000Z"},
+    {"newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-03T01:00:00.000Z"},
+    {"newClaimStatus":"DONE","changeDate":"2019-07-05T01:00:00.000Z"}
+  ]
+}

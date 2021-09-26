@@ -8,6 +8,7 @@
     "name":"A long vacation for Davis",
     "updates":[
       {"newClaimStatus":"NOT_STARTED","changeDate":"2019-07-02T01:00:00.000Z"},
-      {"newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-03T01:00:00.000Z"}
+      {"newClaimStatus":"IN_PROGRESS","changeDate":"2019-07-03T01:00:00.000Z"},
+      {"newClaimStatus":"DONE","changeDate":"2019-07-07T01:00:00.000Z"}
     ]
 }
