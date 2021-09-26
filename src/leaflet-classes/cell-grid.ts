@@ -15,6 +15,10 @@ const DEBUG = false;
 // so that none of them catch the mouse in front of the cellgrid.
 const Z_INDEX = 401;
 
+// If this much time passes between the mouse leaving one cell and entering another, 
+// a "cellhover" event of `null` is emitted.
+const MOUSELEAVE_TIMEOUT = 100;
+
 /**
  * The impetus for creating this class was that creating an `L.Layer` subclass used for 
  * each cell caused performance issues when moving the map, and the bottleneck was Leaflet's
@@ -120,10 +124,12 @@ var CellGrid = Layer.extend({
     return grid;
   },
   /**
-   * The event listeners attached to each cell have three roles:
+   * The event listeners attached to each cell have these roles:
    * 1. Emit "click" events containing the clicked CellXY
    * 2. Emit "cellhover" events containing the hovered-over cell
    * 3. Highlight the cell when the user's mouse cursor is in it.
+   * 4. When the user mouses out of one cell, and does not mouse into another, 
+   *    a `null` event should be fired.
    *
    * In all of these event listeners, the cellXY is in the "cell" property of the emitted 
    * object because the CellXY gets contaminated by Leaflet event properties if it's emitted directly.
@@ -135,6 +141,7 @@ var CellGrid = Layer.extend({
       });
     });
     gridCell.addEventListener('mouseenter', () => {
+      clearTimeout(this._mouseoutTimeout);
       // While it would be slightly tidier to register a second 'mouseenter' listener for
       // the hoverCell color change, performance is of the essence.
       gridCell.style.backgroundColor = HOVER_CELL_COLOR;
@@ -143,9 +150,26 @@ var CellGrid = Layer.extend({
       });
     });
     gridCell.addEventListener('mouseleave', () => {
+      this._mouseoutTimeout = setTimeout(() => {
+        this.fire('cellhover', {
+          cell: null
+        });
+      }, MOUSELEAVE_TIMEOUT);
       gridCell.style.backgroundColor = cellColor;
     });
   },
+  /**
+   * The `mouseoutTimeout` is used to determine when a user's mouse has left the cellgrid.
+   *
+   * This is accomplished by setting `_mouseoutTimeout` inside of the mouseleave event, and
+   * `clearTimeout`ing it in the mouseenter event. If the `clearTimeout` happens first, 
+   * then a cellhover containing `null` is never emitted.
+   *
+   * This is scoped to the Leaflet class because mousing over a cell needs to 
+   * clear the timeout set by the previously moused over cell, so the cells' `_addEventListenersToCell`
+   * calls need to share this variable.
+   */
+  _mouseoutTimeout: setTimeout(() => {}, 0),
   /**
    * Positions `this._overlay` atop the Leaflet container independently of any previous position.
    *

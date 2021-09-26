@@ -1,6 +1,6 @@
 import ClaimStatus   from '/src/types/claim-status.ts'
 
-export function statusForClaim(claim, snapshotTime) {
+export default function statusForClaim(claim, snapshotTime) {
   // `CLOSED` status applies retroactively, so we should check for it before checking the status as of the snapshotTime.
   // (If a non-`CLOSED` update has happened since the issue was closed, then it's assumed that it was reopened.
   if(claim.updates.slice(-1)[0].newClaimStatus === ClaimStatus.CLOSED) return ClaimStatus.CLOSED;

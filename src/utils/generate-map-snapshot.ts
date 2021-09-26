@@ -6,8 +6,8 @@ import CellXY        from '/src/types/cell-x-y.ts'
 import CellStatus    from '/src/types/cell-status.ts'
 import Document      from '/src/types/document.ts'
 
-import { statusForCell, noUnfinishedClaimStatuses } from '/src/utils/status-for-cell.ts'
-import { statusForClaim } from '/src/utils/status-for-claim.ts'
+import statusForClaim from '/src/utils/status-for-claim.ts'
+import statusForCell  from '/src/utils/status-for-cell.ts'
 
 /**
  * Given an ISO8601 string, and all of the releases and claims in the database, produces a 
@@ -123,6 +123,12 @@ export default function generateMapSnapshot(allDocuments: Document[], snapshotTi
   // Maps from cellKey to CellStatus. Used later for `statusBlobs`.
   var cellStatuses = {};
 
+  // Returns true when given 0 claims.
+  const noUnfinishedClaimStatuses = (claimStatuses, snapshotTime) => {
+    return claimStatuses.every((claimStatus) => {
+      return claimStatus === ClaimStatus.DONE;
+    });
+  }
   unblobbedCells.forEach((cell) => {
     var { finishedReleases, unfinishedReleases, exteriorClaims, interiorClaims, questClaims, otherClaims } = cellsToDocuments[cell].reduce((cellDocumentsByType, doc) => {
       switch(doc.type) {

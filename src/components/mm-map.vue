@@ -54,7 +54,7 @@
   export default defineComponent({
     emits: {
       cellhover(e) {
-        return e instanceof CellXY;
+        return (e === null || e instanceof CellXY);
       },
       click(e) {
         return e instanceof CellXY;

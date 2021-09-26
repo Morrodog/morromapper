@@ -1,8 +1,10 @@
 <!-- 
   Named after Leaflet's `L.popup`. For what colloquially would be called a "popup", see `mm-dialog.vue`
+
+  To be toggled with v-if
 -->
 <script>
-  import { defineComponent, h, inject, toRefs, watch } from 'vue'
+  import { defineComponent, h, inject, toRefs, watch, onBeforeUnmount, onMounted } from 'vue'
 
   import BACKGROUNDMAP_BOUND_LENGTH from '/src/constants/backgroundmap-bound-length.ts'
 
@@ -16,14 +18,10 @@
       position: {
         type: CellXY,
         required: true
-      },
-      isVisible: {
-        type: Boolean,
-        required: true
       }
     },
     setup(props, context) {
-      const { isVisible, position } = toRefs(props);
+      const { position } = toRefs(props);
       const mapInitPromise = inject('l')().mapInit;
       const backgroundmapMetadata = inject('backgroundmapMetadata');
       const popup = L.popup({
@@ -34,18 +32,8 @@
         autoPan: false
       }).setContent("");
 
-      const isVisibleUpdate = (newVal) => {
-        mapInitPromise.then((map) => {
-          // `popup.closePopup` doesn't seem to work here, and `map.closePopup` closes ALL popups, so 
-          // we instead add and remove the popup entirely.
-          if(newVal) {
-            popup.openOn(map);
-          } else {
-            popup.removeFrom(map);
-          }
-        });
-      };
       const positionUpdate = (newVal) => {
+        if(newVal === null) return;
         // The popup is placed over the top-center of the cell.
         const leafletRatioX = BACKGROUNDMAP_BOUND_LENGTH/backgroundmapMetadata.widthPixels;
         const leafletRatioY = BACKGROUNDMAP_BOUND_LENGTH/backgroundmapMetadata.heightPixels;
@@ -65,13 +53,21 @@
         ]);
       };
       positionUpdate(position.value);
-      isVisibleUpdate(isVisible.value);
       watch(position, positionUpdate);
-      watch(isVisible, isVisibleUpdate);
+
+      onMounted(() => {
+        mapInitPromise.then((map) => {
+          popup.openOn(map);
+        });
+      });
+      onBeforeUnmount(() => {
+        popup.remove();
+      });
 
       const slots = context.slots;
       return () => {
         if(!slots.hasOwnProperty('default')) return null;
+
         mapInitPromise.then((map) => {
           popup.setContent(renderVNodes(slots.default()));
         });

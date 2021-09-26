@@ -84,7 +84,7 @@ export default {
           ...questClaims,
           ...interiorClaims
         ], datetime));
-      }, 500);
+      }, 1);
     });
   },
   getDocuments(documentIds) {

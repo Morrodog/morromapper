@@ -16,7 +16,7 @@
 
   import MMCellInfoClaimList from '/src/components/mm-cell-info--claim-list.vue'
 
-  import { statusForCellFromDocuments } from '/src/utils/status-for-cell.ts'
+  import statusForCellFromDocuments from '/src/utils/status-for-cell-from-documents.ts'
 
   export default defineComponent({
     components: {

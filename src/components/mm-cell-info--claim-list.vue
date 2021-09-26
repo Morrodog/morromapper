@@ -12,8 +12,7 @@
   import ClaimType from '/src/types/claim-type.ts'
   import CellXY    from '/src/types/cell-x-y.ts'
 
-  import { statusForCellFromDocuments } from '/src/utils/status-for-cell.ts'
-  import { statusForClaim } from '/src/utils/status-for-claim.ts'
+  import statusForClaim from '/src/utils/status-for-claim.ts'
 
   export default defineComponent({
     props: {

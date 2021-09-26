@@ -1,6 +1,6 @@
 <template>
   <mm-map :backgroundmap-metadata="gridmapMetadata" @cellhover="hoverCell=$event" @click="presentCellDetails($event)">
-    <mm-popup :is-visible="!dialogOpen" :position="hoverCell">
+    <mm-popup v-if="popupVisible" :position="hoverCell">
       <b>[{{ hoverCell.x }}, {{ hoverCell.y }}]</b><br />
       {{ tooltipNote }}
     </mm-popup>
@@ -9,10 +9,16 @@
       <mm-cell-info v-if="lastClickedCell" :cell-x-y="lastClickedCell" :cell-documents="lastClickedCellDocuments" :snapshot-time="snapshotTime" />
     </mm-dialog>
   </mm-map>
-  <button @click="snapshotTime='2007-01-01'">2007</button>
-  <button @click="snapshotTime='2015-01-01'">2015</button>
-  <button @click="snapshotTime='2019-01-01'">2019</button>
-  <button @click="snapshotTime='2021-10-01'">Now</button>
+  <div>
+    <button @click="snapshotTime='2007-01-01'">2007</button>
+    <button @click="snapshotTime='2015-01-01'">2015</button>
+    <button @click="snapshotTime='2019-01-01'">2019</button>
+    <button @click="snapshotTime='2021-10-01'">Now</button>
+  </div>
+  <div>
+    <input type="text" v-model="snapshotEntry">
+    <button @click="submitSnapshotEntry()">Use as snapshot time</button>
+  </div>
 </template>
 <script>
   import { defineComponent} from 'vue'
@@ -42,7 +48,7 @@
     data() {
       var snapshotTime = (new Date()).toISOString();
       return {
-        popupVisible: true,
+        snapshotEntry: "2021-10-01",
         hoverCell: new CellXY({x: 0, y: 0}),
         snapshotTime,
         dialogOpen: false,
@@ -63,9 +69,19 @@
         } else {
           return `Not in any claims or releases.`;
         }
+      },
+      popupVisible() {
+        if(this.hoverCell === null) return false;
+        const cellKey = CellXY.toObjectKey(this.hoverCell);
+        return (this.mapSnapshot !== null) &&
+          this.mapSnapshot.cellDocuments.hasOwnProperty(cellKey) &&
+          (this.mapSnapshot.cellDocuments[cellKey].length > 0);
       }
     },
     watch: {
+      snapshotTime(newVal) {
+        this.snapshotEntry = newVal;
+      },
       mapSnapshotPromise: {
         immediate: true,
         handler(newVal) {
@@ -91,6 +107,12 @@
           this.lastClickedCellDocuments = documents;
           this.dialogOpen = true;
         });
+      },
+      submitSnapshotEntry() {
+        try {
+          new Date(this.snapshotEntry);
+          this.snapshotTime = this.snapshotEntry;
+        } catch(e) {}
       }
     }
   })
