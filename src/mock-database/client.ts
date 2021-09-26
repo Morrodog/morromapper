@@ -93,7 +93,7 @@ export default {
         resolve(documentIds.map((id) => {
           return documentsById[id];
         }));
-      }, 2000);
+      }, 350);
     });
   }
 }

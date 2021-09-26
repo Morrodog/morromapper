@@ -1,24 +1,38 @@
 <!-- 
   TODO? Sort claims by ClaimStatus
-  TODO Make component for lists of claims
  -->
 <template>
-  <template v-if="loadingDocuments">
-    <template v-if="hasClaims && !hasReleases">
-      Loading claims...
-    </template>
-    <template v-if="hasReleases && !hasClaims">
-      Loading release information...
-    </template>
-    <template v-if="hasReleases && hasClaims">
-      Loading claims and releases...
-    </template>
+  <template v-if="!includedInSnapshot">
+    This cell is not included in any claims or releases.
   </template>
-  <div v-else>
-    <b>{{ cellCoords }}</b> Stage: {{ cellStatus }}
-    <!-- TODO: Releases -->
-    <mm-cell-info--claim-list v-for="claimsWithType in claimsByType" :claims="claimsWithType.claims" :claim-type="claimsWithType.claimType" :snapshot-time="snapshotTime" />
-  </div>
+  <template v-else>
+    <template v-if="loadingDocuments">
+      <template v-if="hasClaims && !hasReleases">
+        Loading claims...
+      </template>
+      <template v-if="hasReleases && !hasClaims">
+        Loading release information...
+      </template>
+      <template v-if="hasReleases && hasClaims">
+        Loading claims and releases...
+      </template>
+    </template>
+    <div v-else>
+      <b>{{ cellCoords }}</b> Status: {{ cellStatus }}
+      <template v-if="hasReleases">
+        <div v-if="releases.length == 1">
+          Part of <b><a :href="releases[0].url" target="_blank">{{ releases[0].name }}</a></b>
+        </div>
+        <div v-else>
+          <div>In these releases:</div>
+          <ul>
+            <li v-for="release in releases"><a :href="releases.url" target="_blank">{{ release.name }}</a></li>
+          </ul>
+        </div>
+      </template>
+      <mm-cell-info--claim-list v-for="claimsWithType in claimsByType" :claims="claimsWithType.claims" :claim-type="claimsWithType.claimType" :snapshot-time="snapshotTime" />
+    </div>
+  </template>
 </template>
 <script lang="ts">
   import { defineComponent } from 'vue'
@@ -57,6 +71,9 @@
       };
     },
     computed: {
+      includedInSnapshot() {
+        return this.hasClaims || this.hasReleases;
+      },
       claims() {
         return this.cellDocuments.filter((doc) => {
           return doc.type === "CLAIM";
@@ -79,9 +96,13 @@
       },
       cellDocumentsPromise() {
         const cellKey = CellXY.toObjectKey(this.cell);
+        if(!this.mapSnapshot.cellClaims.hasOwnProperty(cellKey) && !this.mapSnapshot.cellReleases.hasOwnProperty(cellKey)) {
+          return Promise.resolve([]);
+        }
         return mockDbClient.getDocuments(this.mapSnapshot.cellClaims[cellKey].concat(this.mapSnapshot.cellReleases[cellKey]));
       },
       cellStatus() {
+        //if(!includedInSnapshot) return CellStatus.BLANK;
         return statusForCellFromDocuments(this.cellDocuments, this.snapshotTime);
       },
       // TODO: Rename and generally clean up

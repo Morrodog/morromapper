@@ -8,7 +8,9 @@ export default function statusForClaim(claim, snapshotTime) {
   if(claim.updates.length === 0) throw new Error(`Invalid claim given as argument to claimStatus: Claim has 0 updates. A new claim should have at least one.`);
 
   // Ignore changes that have not happened yet according to the `snapshotTime`.
-  return claim.updates.filter((update) => {
+  const currentChanges = claim.updates.filter((update) => {
     return update.changeDate <= snapshotTime;
-  }).slice(-1)[0].newClaimStatus;
+  });
+  if(currentChanges.length === 0) return ClaimStatus.NOT_STARTED;
+  return currentChanges.slice(-1)[0].newClaimStatus;
 }
