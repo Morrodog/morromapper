@@ -45,9 +45,6 @@ interface Claim extends Document {
   name: string;
   /**
    * The cells to which the claim applies.
-   *
-   * Despite the name, this is only a list of references; for 
-   * more information, consult `/src/types/cell.ts`.
    */
   cells: CellXY[];
   /**
