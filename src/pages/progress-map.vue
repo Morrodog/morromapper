@@ -20,17 +20,14 @@
   </div>
 </template>
 <script>
-  import { defineComponent} from 'vue'
+  import { MMDialog, MMPopup, MMMap } from 'morromapper-components'
+  import { defineComponent}           from 'vue'
+  import { CellXY }                   from 'morromapper-logic'
 
   import MMCellSummary from '/src/components/mm-cell-summary.vue'
   import MMSnapshot    from '/src/components/mm-snapshot.vue'
   import MMCellInfo    from '/src/components/mm-cell-info.vue'
-  import MMDialog      from '/src/components/mm-dialog.vue'
-  import MMPopup       from '/src/components/mm-popup.vue'
-  import MMMap         from '/src/components/mm-map.vue'
 
-  //import type RasterBackgroundmapMetadata from '/src/types/raster-backgroundmap-metadata.ts'
-  import CellXY     from '/src/types/cell-x-y.ts'
   import CellStatus from '/src/types/cell-status.ts'
   
   import gridmapMetadata from '/src/assets/gridmap-metadata.json'

@@ -1,6 +1,6 @@
 import ClaimUpdate from '/src/types/claim-update.ts'
 import ClaimType   from '/src/types/claim-type.ts'
-import CellXY      from '/src/types/cell-x-y.ts'
+import { CellXY }  from 'morromapper-logic'
 
 /**
  * Represents a claim in Tamriel Rebuilt or Project: Tamriel. 

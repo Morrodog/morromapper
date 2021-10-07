@@ -1,5 +1,6 @@
+import { CellXY } from 'morromapper-logic'
+
 import Document from '/src/types/document.ts'
-import CellXY   from '/src/types/cell-x-y.ts'
 
 /**
  * A `Release` represents a public release of Tamriel Rebuilt.

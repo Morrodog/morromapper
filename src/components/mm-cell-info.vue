@@ -36,9 +36,9 @@
 </template>
 <script lang="ts">
   import { defineComponent } from 'vue'
+  import { CellXY }  from 'morromapper-logic'
 
   import ClaimType from '/src/types/claim-type.ts'
-  import CellXY    from '/src/types/cell-x-y.ts'
 
   import MMCellInfoClaimList from '/src/components/mm-cell-info--claim-list.vue'
 

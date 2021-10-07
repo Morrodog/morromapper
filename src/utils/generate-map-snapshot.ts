@@ -1,8 +1,9 @@
+import { CellXY } from 'morromapper-logic'
+
 import MapChangeType from '/src/types/map-change-type.ts'
 import MapSnapshot   from '/src/types/map-snapshot.ts'
 import ClaimStatus   from '/src/types/claim-status.ts'
 import ClaimType     from '/src/types/claim-type.ts'
-import CellXY        from '/src/types/cell-x-y.ts'
 import CellStatus    from '/src/types/cell-status.ts'
 import Document      from '/src/types/document.ts'
 

@@ -7,8 +7,7 @@
 </template>
 <script>
   import { defineComponent} from 'vue'
-
-  import CellXY      from '/src/types/cell-x-y.ts'
+  import { CellXY }         from 'morromapper-logic'
 
   export default defineComponent({
     props: {

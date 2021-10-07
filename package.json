@@ -7,13 +7,8 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@turf/union": "6.3.0",
-    "font-awesome": "4.7.0",
-    "leaflet": "1.7.1",
-    "leaflet-dialog": "1.0.5",
-    "leaflet.fullscreen": "https://github.com/Morrodog/leaflet.fullscreen",
-    "mount-vue-component": "0.10.1",
-    "uuid": "8.3.2",
+    "morromapper-components": "https://github.com/Morrodog/morromapper-components",
+    "morromapper-logic": "https://github.com/Morrodog/morromapper-logic",
     "vue": "^3.0.5"
   },
   "devDependencies": {

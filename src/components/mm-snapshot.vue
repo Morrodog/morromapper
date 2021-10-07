@@ -7,19 +7,16 @@
 </template>
 <script>
   import { defineComponent, computed, ref, inject } from 'vue';
+  import { CellXY }                                 from 'morromapper-logic';
+  import { MMBlob } from 'morromapper-components'
 
   import CELL_STATUS_COLORS from '/src/constants/cell-status-colors.ts';
 
   import CellStatus from '/src/types/cell-status.ts';
-  import CellXY     from '/src/types/cell-x-y.ts';
-
-  import MMBlob from '/src/components/mm-blob.vue'
-  import MMMap  from '/src/components/mm-map.vue'
 
   export default defineComponent({
     components: {
-      'mm-map': MMMap,
-      'mm-blob': MMBlob,
+      'mm-blob': MMBlob
     },
     props: {
       mapSnapshot: {
@@ -27,7 +24,7 @@
         required: true
       },
       backgroundmapMetadata: {
-        type: Object, // of RasterBackgroundmapMetadata interface
+        type: Object, // of RasterBackgroundmapMetadata interface from morromapper-logic
         required: true
       },
     },

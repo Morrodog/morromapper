@@ -1,5 +1,6 @@
+import { CellXY } from 'morromapper-logic'
+
 import CellStatus from '/src/types/cell-status.ts'
-import CellXY     from '/src/types/cell-x-y.ts'
 
 /*
  * Models a blob of same-colored cells for the purpose of MapSnapshot.

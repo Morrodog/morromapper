@@ -1,5 +1,5 @@
-import Release         from './types/release.ts'
-import MapBlob         from './types/map-blob.ts'
+import Release from './types/release.ts'
+import MapBlob from './types/map-blob.ts'
 
 /**
  * Represents the minimal information necessary to display the correct mm-blobs of color on the mm-map.
